@@ -80,7 +80,7 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
-
+        startPlay();
     }
 
     @Override
