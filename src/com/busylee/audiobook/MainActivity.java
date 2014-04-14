@@ -22,7 +22,7 @@ public class MainActivity extends MediaBindingActivity {
         ((Button) findViewById(R.id.btnPlay)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startPlay();
+                playTrackById(0);
             }
         });
 
@@ -40,10 +40,10 @@ public class MainActivity extends MediaBindingActivity {
             }
         });
 
-        ((Button) findViewById(R.id.btnStop)).setOnClickListener(new View.OnClickListener() {
+        ((Button) findViewById(R.id.btnNext)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setAssetSource();
+                playNextTrack();
             }
         });
 

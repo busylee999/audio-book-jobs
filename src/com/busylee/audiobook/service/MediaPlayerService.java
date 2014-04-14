@@ -26,7 +26,7 @@ public class MediaPlayerService extends MediaBindingService {
 
     @Override
     public void playNext(){
-        release();
+        reset();
 
         playSoundTrack(mSoundTrackStorage.getNextSoundTrack());
 
@@ -39,7 +39,7 @@ public class MediaPlayerService extends MediaBindingService {
 
     @Override
     public void playSoundTrackById(int trackId) {
-        release();
+        reset();
 
         playSoundTrack(mSoundTrackStorage.getSoundTrackById(trackId));
     }

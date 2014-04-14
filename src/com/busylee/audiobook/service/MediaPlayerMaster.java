@@ -40,7 +40,7 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
         mMediaPlayer.setOnErrorListener(this);
     }
 
-    public void setAssetResource(AssetFileDescriptor assetFileDescriptor) throws IOException {
+    protected void setAssetResource(AssetFileDescriptor assetFileDescriptor) throws IOException {
         mMediaPlayer.setDataSource(assetFileDescriptor.getFileDescriptor(), assetFileDescriptor.getStartOffset(), assetFileDescriptor.getLength());
         prepare();
     }
@@ -63,6 +63,11 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
     public void pausePlay()  {
         mMediaPlayer.pause();
         showForeground();
+    }
+
+    protected void reset(){
+        mMediaPlayer.reset();
+        removeForeground();
     }
 
     public void release(){

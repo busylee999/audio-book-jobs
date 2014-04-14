@@ -23,7 +23,7 @@ public class SoundTrackStorage {
         if(mSoundTrackList.isEmpty())
             return null;
 
-        if(mSoundTrackNumber ++ >= mSoundTrackList.size())
+        if( ++ mSoundTrackNumber >= mSoundTrackList.size())
             mSoundTrackNumber = 0;
 
         return mSoundTrackList.get(mSoundTrackNumber);

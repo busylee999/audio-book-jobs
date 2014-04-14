@@ -5,14 +5,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.res.AssetFileDescriptor;
 import android.os.Bundle;
 import android.os.IBinder;
 import com.busylee.audiobook.service.MediaBindingService;
 import com.busylee.audiobook.service.MediaPlayerMaster;
 import com.busylee.audiobook.service.MediaPlayerService;
-
-import java.io.IOException;
 
 /**
  * Created by busylee on 14.04.14.
@@ -21,13 +18,12 @@ public abstract class MediaBindingActivity extends Activity implements MediaPlay
     MediaBindingService mService;
     boolean mBound = false;
 
-    protected void setAssetSource(){
-        try {
-            AssetFileDescriptor descriptor = getAssets().openFd("song.mp3");
-            mService.setAssetResource(descriptor);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    protected void playNextTrack(){
+        mService.playNext();
+    }
+
+    protected void playTrackById(int trackId){
+        mService.playSoundTrackById(trackId);
     }
 
     protected void startPlay(){
