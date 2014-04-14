@@ -2,6 +2,7 @@ package com.busylee.audiobook.service;
 
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
+import android.os.PowerManager;
 import com.busylee.audiobook.R;
 
 import java.io.IOException;
@@ -22,7 +23,6 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
         super.onCreate();
 
         initMediaPlayer();
-
     }
 
     public void setObserver(MediaPlayerObserver observer){
@@ -33,28 +33,16 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
         mObserver = null;
     }
 
-    public void startPlayAsset(AssetFileDescriptor assetFileDescriptor)  {
-        try {
-            setAssetResource(assetFileDescriptor);
-        } catch (IOException e) {
-            if(mObserver != null)
-                mObserver.onError();
-            return;
-        }
-
-        prepare();
-
-        resumePlay();
-    }
-
     private void initMediaPlayer(){
         mMediaPlayer = new MediaPlayer();
+        mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnErrorListener(this);
     }
 
-    private void setAssetResource(AssetFileDescriptor assetFileDescriptor) throws IOException {
+    public void setAssetResource(AssetFileDescriptor assetFileDescriptor) throws IOException {
         mMediaPlayer.setDataSource(assetFileDescriptor.getFileDescriptor(), assetFileDescriptor.getStartOffset(), assetFileDescriptor.getLength());
+        prepare();
     }
 
     private void prepare()  {
@@ -62,12 +50,24 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
         mMediaPlayer.prepareAsync();
     }
 
+    public void startPlay(){
+        mMediaPlayer.start();
+        showForeground();
+    }
+
     public void resumePlay() {
         mMediaPlayer.start();
+        showForeground();
     }
 
     public void pausePlay()  {
         mMediaPlayer.pause();
+        showForeground();
+    }
+
+    public void release(){
+        mMediaPlayer.release();
+        removeForeground();
     }
 
     @Override
@@ -80,7 +80,7 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
-        mMediaPlayer.start();
+
     }
 
     @Override

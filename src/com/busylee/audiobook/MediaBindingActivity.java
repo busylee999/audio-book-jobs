@@ -21,19 +21,32 @@ public abstract class MediaBindingActivity extends Activity implements MediaPlay
     MediaBindingService mService;
     boolean mBound = false;
 
-    protected void startPlay(){
+    protected void setAssetSource(){
         try {
             AssetFileDescriptor descriptor = getAssets().openFd("song.mp3");
-            mService.startPlayAsset(descriptor);
+            mService.setAssetResource(descriptor);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    protected void startPlay(){
+        mService.startPlay();
+    }
+
+    protected void pausePlay(){
+        mService.pausePlay();
+    }
+
+    protected void resumePlay(){
+        mService.resumePlay();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        startService(new Intent(this, MediaPlayerService.class));
     }
 
     @Override
