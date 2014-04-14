@@ -3,11 +3,12 @@ package com.busylee.audiobook.service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import com.busylee.audiobook.entities.SoundTrack;
 
 /**
  * Created by busylee on 14.04.14.
  */
-public class MediaBindingService extends AudioFocusMasterService {
+public abstract class MediaBindingService extends AudioFocusMasterService {
     // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
 
@@ -26,4 +27,10 @@ public class MediaBindingService extends AudioFocusMasterService {
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
+
+    public abstract void playNext();
+
+    public abstract SoundTrack getCurrentSoundTrack();
+
+    public abstract void playSoundTrackById(int trackId);
 }
