@@ -4,6 +4,7 @@ import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.PowerManager;
 import com.busylee.audiobook.R;
+import com.busylee.audiobook.entities.SoundTrack;
 
 import java.io.IOException;
 
@@ -16,7 +17,7 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
 
     private MediaPlayer mMediaPlayer;
 
-    private MediaPlayerObserver mObserver;
+    protected MediaPlayerObserver mObserver;
 
     @Override
     public void onCreate(){
@@ -53,26 +54,37 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
     public void startPlay(){
         mMediaPlayer.start();
         showForeground();
+        if(mObserver != null)
+            mObserver.onPlayResume();
     }
 
     public void resumePlay() {
-        mMediaPlayer.start();
         showForeground();
+        mMediaPlayer.start();
+        if(mObserver != null)
+            mObserver.onPlayResume();
     }
 
     public void pausePlay()  {
-        mMediaPlayer.pause();
         showForeground();
+        mMediaPlayer.pause();
+        if(mObserver != null)
+            mObserver.onPlayPause();
+    }
+
+    public void stopPlay(){
+        mMediaPlayer.stop();
+        if(mObserver != null)
+            mObserver.onPlayStop();
     }
 
     protected void reset(){
         mMediaPlayer.reset();
-        removeForeground();
     }
 
-    public void release(){
-        mMediaPlayer.release();
+    protected void release(){
         removeForeground();
+        mMediaPlayer.release();
     }
 
     @Override
@@ -103,9 +115,12 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
     }
 
     public interface MediaPlayerObserver{
-        public void onPlayStart();
+        public void onPlayResume();
         public void onPlayPause();
-        public void onPrepared();
+        public void onPlayStop();
+
+        public void onSoundTrackChange(SoundTrack soundTrack);
+
         public void onError();
     }
 }

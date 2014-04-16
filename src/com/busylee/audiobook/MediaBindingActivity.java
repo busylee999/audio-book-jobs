@@ -88,17 +88,11 @@ public abstract class MediaBindingActivity extends Activity implements MediaPlay
             mService = binder.getService();
             mService.setObserver(MediaBindingActivity.this);
             mBound = true;
-            onServiceBind();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
             mBound = false;
-            onServiceUnbind();
         }
     };
-
-    protected abstract void onServiceBind();
-
-    protected abstract void onServiceUnbind();
 }

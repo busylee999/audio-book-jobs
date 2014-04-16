@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 import com.busylee.audiobook.entities.SoundTrack;
 
 public class MainActivity extends MediaBindingActivity {
@@ -64,17 +63,7 @@ public class MainActivity extends MediaBindingActivity {
     }
 
     @Override
-    protected void onServiceBind() {
-        Toast.makeText(this, "Service binded", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected void onServiceUnbind() {
-
-    }
-
-    @Override
-    public void onPlayStart() {
+    public void onPlayResume() {
 
     }
 
@@ -84,7 +73,12 @@ public class MainActivity extends MediaBindingActivity {
     }
 
     @Override
-    public void onPrepared() {
+    public void onPlayStop() {
+
+    }
+
+    @Override
+    public void onSoundTrackChange(SoundTrack soundTrack) {
 
     }
 

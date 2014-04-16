@@ -18,6 +18,7 @@ public class MediaPlayerService extends MediaBindingService {
         super.onCreate();
 
         initializeStorage();
+
     }
 
     private void initializeStorage(){
@@ -52,6 +53,9 @@ public class MediaPlayerService extends MediaBindingService {
                 e.printStackTrace();
             }
         }
+
+        if(mObserver != null)
+            mObserver.onSoundTrackChange(soundTrack);
     }
 
     private AssetFileDescriptor getAssetFileDescriptor(String fileAssetUrl) throws IOException {
