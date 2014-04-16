@@ -2,8 +2,10 @@ package com.busylee.audiobook;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
+import com.busylee.audiobook.entities.SoundTrack;
 
 public class MainActivity extends MediaBindingActivity {
 
@@ -19,34 +21,46 @@ public class MainActivity extends MediaBindingActivity {
     }
 
     private void initializeViews(){
-        ((Button) findViewById(R.id.btnPlay)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                playTrackById(0);
-            }
-        });
 
-        ((Button) findViewById(R.id.btnPause)).setOnClickListener(new View.OnClickListener() {
+        (findViewById(R.id.btnPause)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 pausePlay();
             }
         });
 
-        ((Button) findViewById(R.id.btnResume)).setOnClickListener(new View.OnClickListener() {
+        (findViewById(R.id.btnResume)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 resumePlay();
             }
         });
 
-        ((Button) findViewById(R.id.btnNext)).setOnClickListener(new View.OnClickListener() {
+        (findViewById(R.id.btnNext)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 playNextTrack();
             }
         });
 
+        initializeTrackList();
+
+    }
+
+    private void initializeTrackList(){
+         ListView lvTrackList = (ListView) findViewById(R.id.lvTrackList);
+
+        lvTrackList.setAdapter(
+                new TrackAdapter(this, mSoundTrackStorage)
+        );
+
+        lvTrackList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                SoundTrack soundTrack = ((TrackAdapter) adapterView.getAdapter()).getSoundTrack(i);
+                playTrackById(soundTrack.getTrackId());
+            }
+        });
     }
 
     @Override

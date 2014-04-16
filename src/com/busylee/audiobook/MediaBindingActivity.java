@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import com.busylee.audiobook.base.SoundTrackStorage;
 import com.busylee.audiobook.service.MediaBindingService;
 import com.busylee.audiobook.service.MediaPlayerMaster;
 import com.busylee.audiobook.service.MediaPlayerService;
@@ -15,6 +16,9 @@ import com.busylee.audiobook.service.MediaPlayerService;
  * Created by busylee on 14.04.14.
  */
 public abstract class MediaBindingActivity extends Activity implements MediaPlayerMaster.MediaPlayerObserver {
+
+    protected SoundTrackStorage mSoundTrackStorage;
+
     MediaBindingService mService;
     boolean mBound = false;
 
@@ -24,10 +28,6 @@ public abstract class MediaBindingActivity extends Activity implements MediaPlay
 
     protected void playTrackById(int trackId){
         mService.playSoundTrackById(trackId);
-    }
-
-    protected void startPlay(){
-        mService.startPlay();
     }
 
     protected void pausePlay(){
@@ -41,8 +41,14 @@ public abstract class MediaBindingActivity extends Activity implements MediaPlay
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+
+        initializeSoundTrackStorage();
+
         startService(new Intent(this, MediaPlayerService.class));
+    }
+
+    private void initializeSoundTrackStorage(){
+        mSoundTrackStorage = new SoundTrackStorage();
     }
 
     @Override

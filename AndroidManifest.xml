@@ -3,7 +3,7 @@
           package="com.busylee.audiobook"
           android:versionCode="1"
           android:versionName="1.0">
-    <uses-sdk android:minSdkVersion="19"/>
+    <uses-sdk android:minSdkVersion="10"/>
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
