@@ -19,6 +19,10 @@ public class SoundTrackStorage {
         initializeSoundTracks();
     }
 
+    public List<SoundTrack> getSoundTrackList(){
+        return mSoundTrackList;
+    }
+
     public SoundTrack getNextSoundTrack(){
         if(mSoundTrackList.isEmpty())
             return null;
