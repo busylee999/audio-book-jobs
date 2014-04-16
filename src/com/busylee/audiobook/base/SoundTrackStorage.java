@@ -19,6 +19,10 @@ public class SoundTrackStorage {
         initializeSoundTracks();
     }
 
+    public List<SoundTrack> getSoundTrackList(){
+        return mSoundTrackList;
+    }
+
     public SoundTrack getNextSoundTrack(){
         if(mSoundTrackList.isEmpty())
             return null;
@@ -51,7 +55,7 @@ public class SoundTrackStorage {
     private void initializeSoundTracks(){
         int number = 0;
         for(String assetFilePath : TrackBase.trackFileList){
-            mSoundTrackList.add(initializeSoundTrack(number, assetFilePath));
+            mSoundTrackList.add(initializeSoundTrack(number ++ , assetFilePath));
         }
     }
 
