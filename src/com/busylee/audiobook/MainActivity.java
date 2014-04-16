@@ -4,9 +4,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import com.busylee.audiobook.entities.SoundTrack;
 
 public class MainActivity extends MediaBindingActivity {
+
+    TextView tvCurrentTrack;
 
     /**
      * Called when the activity is first created.
@@ -17,6 +20,17 @@ public class MainActivity extends MediaBindingActivity {
         setContentView(R.layout.main);
 
         initializeViews();
+    }
+
+    protected void showCurrentTrack(final SoundTrack soundTrack){
+        runOnUiThread(
+            new Runnable() {
+                @Override
+                public void run() {
+                    tvCurrentTrack.setText(soundTrack.getFileAssetUrl());
+                }
+            }
+        );
     }
 
     private void initializeViews(){
@@ -41,6 +55,8 @@ public class MainActivity extends MediaBindingActivity {
                 playNextTrack();
             }
         });
+
+        tvCurrentTrack = (TextView) findViewById(R.id.tvCurrentTrack);
 
         initializeTrackList();
 
@@ -79,11 +95,18 @@ public class MainActivity extends MediaBindingActivity {
 
     @Override
     public void onSoundTrackChange(SoundTrack soundTrack) {
-
+        showCurrentTrack(soundTrack);
     }
 
     @Override
     public void onError() {
 
+    }
+
+    @Override
+    protected void onServiceBind() {
+        showCurrentTrack(
+                getCurrentTrack()
+        );
     }
 }

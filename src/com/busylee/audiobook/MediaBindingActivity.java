@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import com.busylee.audiobook.base.SoundTrackStorage;
+import com.busylee.audiobook.entities.SoundTrack;
 import com.busylee.audiobook.service.MediaBindingService;
 import com.busylee.audiobook.service.MediaPlayerMaster;
 import com.busylee.audiobook.service.MediaPlayerService;
@@ -36,6 +37,10 @@ public abstract class MediaBindingActivity extends Activity implements MediaPlay
 
     protected void resumePlay(){
         mService.resumePlay();
+    }
+
+    protected SoundTrack getCurrentTrack(){
+        return mService.getCurrentSoundTrack();
     }
 
     @Override
@@ -88,6 +93,7 @@ public abstract class MediaBindingActivity extends Activity implements MediaPlay
             mService = binder.getService();
             mService.setObserver(MediaBindingActivity.this);
             mBound = true;
+            onServiceBind();
         }
 
         @Override
@@ -95,4 +101,6 @@ public abstract class MediaBindingActivity extends Activity implements MediaPlay
             mBound = false;
         }
     };
+
+    protected abstract void onServiceBind();
 }
