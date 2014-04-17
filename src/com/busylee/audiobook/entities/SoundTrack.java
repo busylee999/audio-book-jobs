@@ -1,7 +1,5 @@
 package com.busylee.audiobook.entities;
 
-import java.io.File;
-
 /**
  * Created by busylee on 4/14/14.
  */
@@ -31,11 +29,8 @@ public class SoundTrack {
         return mFileAssetUrl;
     }
 
-	public File getFile(){
-		return new File(
-				android.os.Environment.getExternalStorageDirectory().getAbsolutePath() +
-						String.valueOf(mTrackId)
-		);
+	public String getFileName(){
+		return String.valueOf(mTrackId);
 	}
 
 	/**

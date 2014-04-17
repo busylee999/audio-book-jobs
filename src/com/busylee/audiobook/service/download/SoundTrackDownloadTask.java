@@ -1,6 +1,8 @@
 package com.busylee.audiobook.service.download;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import com.busylee.audiobook.entities.SoundTrack;
 
 import java.io.*;
@@ -12,22 +14,29 @@ import java.net.URL;
  */
 public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack> {
 
+	static final String LOG_TAG = "SoundTrackDownloadTask";
 	static final int DATA_BUFFER_LENGTH = 4096;
+
 	private SoundTrackDownloadObserver mSoundTrackDownloadCompleteObserver;
 	private SoundTrack mSoundTrack;
+	private Context mContext;
 
-	public SoundTrackDownloadTask(SoundTrack soundTrack, SoundTrackDownloadObserver soundTrackDownloadCompleteObserver){
+	public SoundTrackDownloadTask(SoundTrack soundTrack, SoundTrackDownloadObserver soundTrackDownloadCompleteObserver, Context context){
 		super();
 
 		mSoundTrack = soundTrack;
 
 		mSoundTrackDownloadCompleteObserver = soundTrackDownloadCompleteObserver;
+
+		mContext = context;
 	}
 
     @Override
     protected SoundTrack doInBackground(Void... params) {
 
-		if(downLoadFile(mSoundTrack.getFileUrl(), mSoundTrack.getFile()))
+		File file = new File(mContext.getFilesDir(), mSoundTrack.getFileName());
+
+		if(downLoadFile(mSoundTrack.getFileUrl(), file))
 			return mSoundTrack;
 
         return null;
@@ -59,10 +68,15 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
             connection.connect();
 
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+				Log.e(LOG_TAG, "Http connection response is NOT OK");
                 return false;
             }
 
+			Log.d(LOG_TAG, "Http connection response is ok");
+
             int fileLength = connection.getContentLength();
+
+			Log.d(LOG_TAG, "File lengt is" + fileLength);
 
             // download the file
             input = connection.getInputStream();
@@ -85,6 +99,7 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
                 output.write(data, 0, count);
             }
         } catch (Exception e) {
+			e.printStackTrace();
 			return false;
         } finally {
             try {

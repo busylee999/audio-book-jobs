@@ -14,18 +14,26 @@ import java.util.Queue;
  */
 public class DownloadService extends CustomService implements SoundTrackDownloadTask.SoundTrackDownloadObserver {
 
+	boolean mNeedToStart = true;
+
+	DownLoadServiceObserver mDownLoadServiceObserver;
+
 	Queue<SoundTrackDownloadTask> mDownloadTaskQueue = new LinkedList<SoundTrackDownloadTask>();
 
 	public void addDownloadTask(SoundTrack soundTrack){
-		mDownloadTaskQueue.add(new SoundTrackDownloadTask(soundTrack, this));
+		mDownloadTaskQueue.add(new SoundTrackDownloadTask(soundTrack, this, getApplicationContext()));
+		startNext();
+	}
+
+	public void setObserver(DownLoadServiceObserver downLoadServiceObserver){
+		mDownLoadServiceObserver = downLoadServiceObserver;
 	}
 
 	private void startNext(){
 		SoundTrackDownloadTask soundTrackDownloadTask = mDownloadTaskQueue.poll();
 		if(soundTrackDownloadTask != null)
 			soundTrackDownloadTask.execute();
-		else
-			stopSelf();
+
 	}
 
 	// Binder given to clients
@@ -50,19 +58,26 @@ public class DownloadService extends CustomService implements SoundTrackDownload
 	@Override
 	public void onSoundTrackDownloadComplete(SoundTrack soundTrack) {
 		startNext();
+		if(mDownLoadServiceObserver != null)
+			mDownLoadServiceObserver.onSoundTrackDownloadSuccess(soundTrack);
 	}
 
 	@Override
 	public void onSoundTrackDownloadError() {
 		startNext();
+		if(mDownLoadServiceObserver != null)
+			mDownLoadServiceObserver.onSoundTrackDownloadError();
 	}
 
 	@Override
 	public void onSoundTrackDownloadProgress(int progress) {
-
+		if(mDownLoadServiceObserver != null)
+			mDownLoadServiceObserver.onSoundTrackDownloadProgressChange(progress);
 	}
 
 	public interface DownLoadServiceObserver{
-		public void onNotify();
+		public void onSoundTrackDownloadError();
+		public void onSoundTrackDownloadSuccess(SoundTrack soundTrack);
+		public void onSoundTrackDownloadProgressChange(int progress);
 	}
 }

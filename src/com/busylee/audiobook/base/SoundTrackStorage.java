@@ -63,7 +63,7 @@ public class SoundTrackStorage {
     private void initializeSoundTracks(){
         int number = 0;
         for(String fileUrl : TrackBase.trackFileList){
-            mSoundTrackList.add(initializeSoundTrack(number ++ , "" , fileUrl));
+            mSoundTrackList.add(initializeSoundTrack(number ++ , String.valueOf(number) , fileUrl));
         }
     }
 
