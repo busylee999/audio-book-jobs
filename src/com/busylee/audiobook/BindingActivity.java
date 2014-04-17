@@ -100,6 +100,7 @@ public abstract class BindingActivity extends Activity implements MediaPlayerMas
     @Override
     protected void onStop() {
         unbindMeidaService();
+		unbindDownloadService();
         super.onStop();
     }
 

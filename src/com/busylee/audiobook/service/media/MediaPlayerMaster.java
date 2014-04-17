@@ -46,6 +46,11 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
         prepare();
     }
 
+	protected void playFilePath(String soundTrackPath) throws IOException {
+		mMediaPlayer.setDataSource(soundTrackPath);
+		prepare();
+	}
+
     private void prepare()  {
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.prepareAsync();

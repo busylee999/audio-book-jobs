@@ -134,6 +134,7 @@ public class MainActivity extends BindingActivity {
 	@Override
 	public void onSoundTrackDownloadSuccess(SoundTrack soundTrack) {
 		Toast.makeText(this, "Track downloaded id=" + soundTrack.getTrackId(), Toast.LENGTH_LONG).show();
+		playTrackById(soundTrack.getTrackId());
 	}
 
 	@Override

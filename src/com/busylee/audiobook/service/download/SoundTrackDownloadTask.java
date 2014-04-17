@@ -36,6 +36,8 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 
 		File file = new File(mContext.getFilesDir(), mSoundTrack.getFileName());
 
+		mSoundTrack.setFilePath(file.getAbsolutePath());
+
 		if(downLoadFile(mSoundTrack.getFileUrl(), file))
 			return mSoundTrack;
 

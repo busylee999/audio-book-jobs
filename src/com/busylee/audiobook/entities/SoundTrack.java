@@ -7,6 +7,7 @@ public class SoundTrack {
 
     private int mTrackId;
     private String mFileAssetUrl;
+	private String mFilePath;
 	private String mFileUrl;
 	private boolean mIsDownloaded;
 
@@ -25,12 +26,36 @@ public class SoundTrack {
 		return mFileUrl;
 	}
 
+	/**
+	 * Получить путь к файлу в ассетах
+	 * @return
+	 */
     public String getFileAssetUrl(){
         return mFileAssetUrl;
     }
 
+	/**
+	 * Имя файла
+	 * @return
+	 */
 	public String getFileName(){
 		return String.valueOf(mTrackId);
+	}
+
+	/**
+	 * Получение абсолютного пути к файлу
+	 * @return
+	 */
+	public String getFilePath(){
+		return mFilePath;
+	}
+
+	/**
+	 * Задать путь к файлу трека
+	 * @param filePath
+	 */
+	public void setFilePath(String filePath){
+		mFilePath = filePath;
 	}
 
 	/**

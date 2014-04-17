@@ -48,7 +48,8 @@ public class MediaPlayerService extends MediaBindingService {
     private void playSoundTrack(SoundTrack soundTrack){
         if (soundTrack != null){
             try {
-                setAssetResource(getAssetFileDescriptor(soundTrack.getFileAssetUrl()));
+//                setAssetResource(getAssetFileDescriptor(soundTrack.getFileAssetUrl()));
+				playFilePath(soundTrack.getFilePath());
             } catch (IOException e) {
                 e.printStackTrace();
             }
