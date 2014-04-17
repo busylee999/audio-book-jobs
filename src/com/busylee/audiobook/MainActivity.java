@@ -139,6 +139,6 @@ public class MainActivity extends BindingActivity {
 
 	@Override
 	public void onSoundTrackDownloadProgressChange(int progress) {
-
+		mTrackAdapter.notifyDataSetChanged();
 	}
 }

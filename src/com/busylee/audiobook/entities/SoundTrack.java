@@ -10,6 +10,7 @@ public class SoundTrack {
 	private String mFilePath;
 	private String mFileUrl;
 	private boolean mIsDownloaded;
+	private int mDownloadProgress;
 
     public SoundTrack(int trackId, String fileAssetUrl, String fileUrl, boolean isDownloaded){
         mTrackId = trackId;
@@ -17,6 +18,18 @@ public class SoundTrack {
 		mFileUrl = fileUrl;
 		mIsDownloaded = isDownloaded;
     }
+
+	public int getDownloadProgress() {
+		return mDownloadProgress;
+	}
+
+	public void setDownloadProgress(int downloadProgress) {
+		mDownloadProgress = downloadProgress;
+	}
+
+	public void downloaded(){
+		mIsDownloaded = true;
+	}
 
 	/**
 	 * Получение ссылки для скачивания данного трека

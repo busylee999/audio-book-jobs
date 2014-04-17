@@ -91,9 +91,9 @@ public abstract class BindingActivity extends Activity implements MediaPlayerMas
 
 	protected void unbindDownloadService(){
 		if (mDownloadBound) {
-			mMediaService.removeObserver();
-			unbindService(mMediaConnection);
-			mMediaBound = false;
+			mDownloadService.removeObserver();
+			unbindService(mDownLoadConnection);
+			mDownloadBound = false;
 		}
 	}
 

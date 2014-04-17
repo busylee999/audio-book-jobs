@@ -48,7 +48,13 @@ public class TrackAdapter extends BaseAdapter {
 
         SoundTrack soundTrack = getSoundTrack(i);
 
-        ((TextView) view.findViewById(R.id.tvTrackName)).setText(soundTrack.getFileAssetUrl());
+        ((TextView) view.findViewById(R.id.tvTrackName)).setText(
+				soundTrack.getFileAssetUrl()
+		);
+
+		((TextView) view.findViewById(R.id.tvProgress)).setText(
+				String.valueOf(soundTrack.getDownloadProgress())
+		);
 
         return view;
     }

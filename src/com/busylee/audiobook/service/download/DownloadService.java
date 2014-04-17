@@ -22,11 +22,16 @@ public class DownloadService extends CustomService implements SoundTrackDownload
 
 	public void addDownloadTask(SoundTrack soundTrack){
 		mDownloadTaskQueue.add(new SoundTrackDownloadTask(soundTrack, this, getApplicationContext()));
+
 		startNext();
 	}
 
 	public void setObserver(DownLoadServiceObserver downLoadServiceObserver){
 		mDownLoadServiceObserver = downLoadServiceObserver;
+	}
+
+	public void removeObserver(){
+		mDownLoadServiceObserver = null;
 	}
 
 	private void startNext(){

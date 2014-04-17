@@ -38,14 +38,17 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 
 		mSoundTrack.setFilePath(file.getAbsolutePath());
 
-		if(downLoadFile(mSoundTrack.getFileUrl(), file))
+		if(downLoadFile(mSoundTrack.getFileUrl(), file)) {
+			mSoundTrack.downloaded();
 			return mSoundTrack;
+		}
 
         return null;
     }
 
 	@Override
 	protected void onProgressUpdate(Integer... progress) {
+		mSoundTrack.setDownloadProgress(progress[0]);
 		if(mSoundTrackDownloadCompleteObserver != null)
 			mSoundTrackDownloadCompleteObserver.onSoundTrackDownloadProgress(progress[0]);
 	}
