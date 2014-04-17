@@ -9,38 +9,38 @@ import android.os.Bundle;
 import android.os.IBinder;
 import com.busylee.audiobook.base.SoundTrackStorage;
 import com.busylee.audiobook.entities.SoundTrack;
-import com.busylee.audiobook.service.MediaBindingService;
-import com.busylee.audiobook.service.MediaPlayerMaster;
-import com.busylee.audiobook.service.MediaPlayerService;
+import com.busylee.audiobook.service.media.MediaBindingService;
+import com.busylee.audiobook.service.media.MediaPlayerMaster;
+import com.busylee.audiobook.service.media.MediaPlayerService;
 
 /**
  * Created by busylee on 14.04.14.
  */
-public abstract class MediaBindingActivity extends Activity implements MediaPlayerMaster.MediaPlayerObserver {
+public abstract class BindingActivity extends Activity implements MediaPlayerMaster.MediaPlayerObserver {
 
     protected SoundTrackStorage mSoundTrackStorage;
 
-    MediaBindingService mService;
+    MediaBindingService mMediaService;
     boolean mBound = false;
 
     protected void playNextTrack(){
-        mService.playNext();
+        mMediaService.playNext();
     }
 
     protected void playTrackById(int trackId){
-        mService.playSoundTrackById(trackId);
+        mMediaService.playSoundTrackById(trackId);
     }
 
     protected void pausePlay(){
-        mService.pausePlay();
+        mMediaService.pausePlay();
     }
 
     protected void resumePlay(){
-        mService.resumePlay();
+        mMediaService.resumePlay();
     }
 
     protected SoundTrack getCurrentTrack(){
-        return mService.getCurrentSoundTrack();
+        return mMediaService.getCurrentSoundTrack();
     }
 
     @Override
@@ -53,7 +53,7 @@ public abstract class MediaBindingActivity extends Activity implements MediaPlay
     }
 
     private void initializeSoundTrackStorage(){
-        mSoundTrackStorage = new SoundTrackStorage();
+        mSoundTrackStorage = SoundTrackStorage.getInstance();
     }
 
     @Override
@@ -70,7 +70,7 @@ public abstract class MediaBindingActivity extends Activity implements MediaPlay
 
     protected void unbindService(){
         if (mBound) {
-            mService.removeObserver();
+            mMediaService.removeObserver();
             unbindService(mConnection);
             mBound = false;
         }
@@ -90,8 +90,8 @@ public abstract class MediaBindingActivity extends Activity implements MediaPlay
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             MediaBindingService.LocalBinder binder = (MediaBindingService.LocalBinder) service;
-            mService = binder.getService();
-            mService.setObserver(MediaBindingActivity.this);
+            mMediaService = binder.getService();
+            mMediaService.setObserver(BindingActivity.this);
             mBound = true;
             onServiceBind();
         }

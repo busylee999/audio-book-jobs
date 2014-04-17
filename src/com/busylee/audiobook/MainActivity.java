@@ -7,7 +7,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import com.busylee.audiobook.entities.SoundTrack;
 
-public class MainActivity extends MediaBindingActivity {
+public class MainActivity extends BindingActivity {
 
     TextView tvCurrentTrack;
 

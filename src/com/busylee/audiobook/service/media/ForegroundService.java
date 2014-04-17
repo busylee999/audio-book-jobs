@@ -1,10 +1,11 @@
-package com.busylee.audiobook.service;
+package com.busylee.audiobook.service.media;
 
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
 import com.busylee.audiobook.MainActivity;
 import com.busylee.audiobook.R;
+import com.busylee.audiobook.service.CustomService;
 
 /**
  * Created by busylee on 14.04.14.

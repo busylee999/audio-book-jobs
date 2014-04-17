@@ -1,4 +1,4 @@
-package com.busylee.audiobook.service;
+package com.busylee.audiobook.service.media;
 
 import android.content.res.AssetFileDescriptor;
 import com.busylee.audiobook.base.SoundTrackStorage;
@@ -22,7 +22,7 @@ public class MediaPlayerService extends MediaBindingService {
     }
 
     private void initializeStorage(){
-        mSoundTrackStorage = new SoundTrackStorage();
+        mSoundTrackStorage = SoundTrackStorage.getInstance();
     }
 
     @Override

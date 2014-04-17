@@ -14,7 +14,15 @@ public class SoundTrackStorage {
 
     int mSoundTrackNumber = 0;
 
-    public SoundTrackStorage(){
+	public static class SingletonHolder {
+		public static final SoundTrackStorage HOLDER_INSTANCE = new SoundTrackStorage();
+	}
+
+	public static SoundTrackStorage getInstance() {
+		return SingletonHolder.HOLDER_INSTANCE;
+	}
+
+    private SoundTrackStorage(){
 
         initializeSoundTracks();
     }
@@ -54,13 +62,13 @@ public class SoundTrackStorage {
 
     private void initializeSoundTracks(){
         int number = 0;
-        for(String assetFilePath : TrackBase.trackFileList){
-            mSoundTrackList.add(initializeSoundTrack(number ++ , assetFilePath));
+        for(String fileUrl : TrackBase.trackFileList){
+            mSoundTrackList.add(initializeSoundTrack(number ++ , "" , fileUrl));
         }
     }
 
-    private SoundTrack initializeSoundTrack(int number, String assetFilePath){
-        return new SoundTrack(number, assetFilePath);
+    private SoundTrack initializeSoundTrack(int number, String assetFilePath, String fileUrl){
+        return new SoundTrack(number, assetFilePath, fileUrl, false);
     }
 
 }
