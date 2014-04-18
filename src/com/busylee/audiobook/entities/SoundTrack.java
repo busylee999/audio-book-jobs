@@ -31,6 +31,10 @@ public class SoundTrack {
 		mIsDownloaded = true;
 	}
 
+	public boolean isDownloaded(){
+		return mIsDownloaded;
+	}
+
 	/**
 	 * Получение ссылки для скачивания данного трека
 	 * @return

@@ -2,14 +2,13 @@ package com.busylee.audiobook;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.busylee.audiobook.base.SoundTrackStorage;
 import com.busylee.audiobook.entities.SoundTrack;
 
-public class MainActivity extends BindingActivity {
+public class MainActivity extends BindingActivity implements TrackAdapter.SoundTrackClickListener {
 
     TextView tvCurrentTrack;
 	TrackAdapter mTrackAdapter;
@@ -67,7 +66,7 @@ public class MainActivity extends BindingActivity {
 
 	private TrackAdapter getAdapter(){
 		if (mTrackAdapter == null)
-			mTrackAdapter = new TrackAdapter(this, SoundTrackStorage.getInstance());
+			mTrackAdapter = new TrackAdapter(this, SoundTrackStorage.getInstance(), this);
 
 		return mTrackAdapter;
 	}
@@ -78,15 +77,6 @@ public class MainActivity extends BindingActivity {
         lvTrackList.setAdapter(
 			getAdapter()
         );
-
-        lvTrackList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                SoundTrack soundTrack = ((TrackAdapter) adapterView.getAdapter()).getSoundTrack(i);
-//                playTrackById(soundTrack.getTrackId());
-				addDownloadTask(soundTrack);
-            }
-        });
     }
 
     @Override
@@ -134,11 +124,28 @@ public class MainActivity extends BindingActivity {
 	@Override
 	public void onSoundTrackDownloadSuccess(SoundTrack soundTrack) {
 		Toast.makeText(this, "Track downloaded id=" + soundTrack.getTrackId(), Toast.LENGTH_LONG).show();
-		playTrackById(soundTrack.getTrackId());
 	}
 
 	@Override
 	public void onSoundTrackDownloadProgressChange(int progress) {
-		mTrackAdapter.notifyDataSetChanged();
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				mTrackAdapter.notifyDataSetChanged();
+			}
+		});
+	}
+
+	@Override
+	public void onPlayClick(SoundTrack soundTrack) {
+		if(isMediaBound() && soundTrack != null && soundTrack.isDownloaded())
+			playTrackById(soundTrack.getTrackId());
+
+	}
+
+	@Override
+	public void onDownloadClick(SoundTrack soundTrack) {
+		if(isDownloadBound() && soundTrack != null)
+			addDownloadTask(soundTrack);
 	}
 }

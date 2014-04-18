@@ -67,6 +67,7 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
         InputStream input = null;
         OutputStream output = null;
         HttpURLConnection connection = null;
+		long total = 0;
         try {
             URL url = new URL(fileUrl);
             connection = (HttpURLConnection) url.openConnection();
@@ -88,7 +89,6 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
             output = new FileOutputStream(file);
 
             byte data[] = new byte[DATA_BUFFER_LENGTH];
-            long total = 0;
             int count;
             while ((count = input.read(data)) != -1) {
                 // allow canceling with back button
@@ -104,6 +104,7 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
                 output.write(data, 0, count);
             }
         } catch (Exception e) {
+
 			e.printStackTrace();
 			return false;
         } finally {

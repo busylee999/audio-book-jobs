@@ -9,8 +9,8 @@ import java.util.List;
 public class TrackBase {
     public final static List<String> trackFileList = new ArrayList<String>();
     static {
-        trackFileList.add(new String("http://dl.zaycev.net/bc27f9d3-2895-4dc1-92d3-ac3959d05a2a/29026/2902655/shakira_-_dare_la_la_la_(zaycev.net).mp3"));
-        trackFileList.add(new String("http://dl.zaycev.net/c9f13005-f9e3-4612-8c91-d2448b7ecf14/25622/2562291/shakira_-_can_t_remember_to_forget_you_feat_(zaycev.net)._rihanna.mp3"));
-        trackFileList.add(new String("http://dl.zaycev.net/b8deb5e5-fe8a-423c-8543-06b08c3ee887/7833/783399/shakira_-_waka_waka_rington_(zaycev.net).mp3"));
+        trackFileList.add(new String("http://dl.zaycev.net/36b21768-6093-4631-b12b-dac2563c60a0/29026/2902655/shakira_-_dare_la_la_la_(zaycev.net).mp3"));
+        trackFileList.add(new String("http://dl.zaycev.net/3b5bd669-3c78-4424-83f4-47de33999511/7778/777821/shakira_-_loca_(zaycev.net).mp3"));
+        trackFileList.add(new String("http://dl.zaycev.net/1ea58d32-d351-44f4-9b9d-b3d3ed4f38d5/16277/1627736/shakira_-_wherever_(zaycev.net).mp3"));
     }
 }

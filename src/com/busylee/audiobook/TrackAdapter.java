@@ -18,10 +18,12 @@ public class TrackAdapter extends BaseAdapter {
 
     private List<SoundTrack> mSoundTrackList;
     private LayoutInflater mLayoutInflater;
+	private SoundTrackClickListener mSoundTrackClickListener;
 
-    public TrackAdapter(Context context, SoundTrackStorage soundTrackStorage){
+    public TrackAdapter(Context context, SoundTrackStorage soundTrackStorage, SoundTrackClickListener soundTrackClickListener){
         mSoundTrackList = soundTrackStorage.getSoundTrackList();
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		mSoundTrackClickListener = soundTrackClickListener;
     }
 
     @Override
@@ -46,15 +48,31 @@ public class TrackAdapter extends BaseAdapter {
             view = mLayoutInflater.inflate(R.layout.track_item, viewGroup, false);
         }
 
-        SoundTrack soundTrack = getSoundTrack(i);
+        final SoundTrack soundTrack = getSoundTrack(i);
 
         ((TextView) view.findViewById(R.id.tvTrackName)).setText(
 				soundTrack.getFileAssetUrl()
 		);
 
 		((TextView) view.findViewById(R.id.tvProgress)).setText(
-				String.valueOf(soundTrack.getDownloadProgress())
+				String.valueOf(soundTrack.getDownloadProgress()) + "/100"
 		);
+
+		(view.findViewById(R.id.btnPlay)).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				if(mSoundTrackClickListener != null)
+					mSoundTrackClickListener.onPlayClick(soundTrack);
+			}
+		});
+
+		(view.findViewById(R.id.btnLoad)).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				if(mSoundTrackClickListener != null)
+					mSoundTrackClickListener.onDownloadClick(soundTrack);
+			}
+		});
 
         return view;
     }
@@ -62,4 +80,9 @@ public class TrackAdapter extends BaseAdapter {
     public SoundTrack getSoundTrack(int i){
         return (SoundTrack) getItem(i);
     }
+
+	public interface SoundTrackClickListener {
+		public void onPlayClick(SoundTrack soundTrack);
+		public void onDownloadClick(SoundTrack soundTrack);
+	}
 }
