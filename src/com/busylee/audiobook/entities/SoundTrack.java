@@ -1,24 +1,34 @@
 package com.busylee.audiobook.entities;
 
+import android.content.ContentValues;
+
 /**
  * Created by busylee on 4/14/14.
  */
 public class SoundTrack {
 
     private int mTrackId;
-    private String mFileAssetUrl = null;
+    private String mName;
+    private String mFileUrl;
+    private String mFilePath;
+    private boolean mIsDownloaded;
 
     public SoundTrack(int trackId, String fileAssetUrl){
         mTrackId = trackId;
-        mFileAssetUrl = fileAssetUrl;
+        mFilePath = fileAssetUrl;
     }
 
     public String getFileAssetUrl(){
-        return mFileAssetUrl;
+        return mFilePath;
     }
 
     public int getTrackId(){
         return mTrackId;
+    }
+
+    public ContentValues getContentValues(){
+        ContentValues contentValues = new ContentValues();
+        return contentValues;
     }
 
     @Override
