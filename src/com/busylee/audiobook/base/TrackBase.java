@@ -1,5 +1,7 @@
 package com.busylee.audiobook.base;
 
+import com.busylee.audiobook.entities.SoundTrack;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,10 +9,13 @@ import java.util.List;
  * Created by busylee on 4/14/14.
  */
 public class TrackBase {
-    public final static List<String> trackFileList = new ArrayList<String>();
+    public final static List<SoundTrack> trackFileList = new ArrayList<SoundTrack>();
     static {
-        trackFileList.add(new String("http://dl.zaycev.net/36b21768-6093-4631-b12b-dac2563c60a0/29026/2902655/shakira_-_dare_la_la_la_(zaycev.net).mp3"));
-        trackFileList.add(new String("http://dl.zaycev.net/3b5bd669-3c78-4424-83f4-47de33999511/7778/777821/shakira_-_loca_(zaycev.net).mp3"));
-        trackFileList.add(new String("http://dl.zaycev.net/1ea58d32-d351-44f4-9b9d-b3d3ed4f38d5/16277/1627736/shakira_-_wherever_(zaycev.net).mp3"));
+        trackFileList.add(new SoundTrack("track 1", "http://dl.zaycev.net/b5d14270-fb2a-4663-a8f9-2c9436ba17d3/29099/2909994/natali_-_shakherezada_(zaycev.net).mp3", null, false));
+//        trackFileList.add(new SoundTrack(2, "track 2", "http://dl.zaycev.net/3e8c2471-301e-469a-a059-f05910445805/29021/2902190/aleksandr_kogan_-_kto_kogo_brosil_(zaycev.net).mp3", null, false));
+//        trackFileList.add(new SoundTrack(3, "track 3", "http://dl.zaycev.net/3e8c2471-301e-469a-a059-f05910445805/29021/2902190/aleksandr_kogan_-_kto_kogo_brosil_(zaycev.net).mp3", null, false));
+//        trackFileList.add(new SoundTrack(4, "track 4", "http://dl.zaycev.net/3e8c2471-301e-469a-a059-f05910445805/29021/2902190/aleksandr_kogan_-_kto_kogo_brosil_(zaycev.net).mp3", null, false));
+//        trackFileList.add(new SoundTrack(5, "track 5", "http://dl.zaycev.net/3e8c2471-301e-469a-a059-f05910445805/29021/2902190/aleksandr_kogan_-_kto_kogo_brosil_(zaycev.net).mp3", null, false));
+//        trackFileList.add(new SoundTrack(6, "track 6", "http://dl.zaycev.net/3e8c2471-301e-469a-a059-f05910445805/29021/2902190/aleksandr_kogan_-_kto_kogo_brosil_(zaycev.net).mp3", null, false));
     }
 }

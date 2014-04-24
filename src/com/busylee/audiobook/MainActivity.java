@@ -26,12 +26,12 @@ public class MainActivity extends BindingActivity implements TrackAdapter.SoundT
 
     protected void showCurrentTrack(final SoundTrack soundTrack){
         runOnUiThread(
-            new Runnable() {
-                @Override
-                public void run() {
-                    tvCurrentTrack.setText(soundTrack.getFileAssetUrl());
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        tvCurrentTrack.setText(soundTrack.getFileName());
+                    }
                 }
-            }
         );
     }
 
@@ -63,10 +63,14 @@ public class MainActivity extends BindingActivity implements TrackAdapter.SoundT
         initializeTrackList();
 
     }
+    
+    private SoundTrackStorage getSoundTrackStorage(){
+        return ((AudioBookApplication) getApplication()).getSoundTrackStorage();
+    }
 
 	private TrackAdapter getAdapter(){
 		if (mTrackAdapter == null)
-			mTrackAdapter = new TrackAdapter(this, SoundTrackStorage.getInstance(), this);
+			mTrackAdapter = new TrackAdapter(this, getSoundTrackStorage() , this);
 
 		return mTrackAdapter;
 	}

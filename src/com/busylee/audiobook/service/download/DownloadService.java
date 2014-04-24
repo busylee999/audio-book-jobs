@@ -3,6 +3,7 @@ package com.busylee.audiobook.service.download;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import com.busylee.audiobook.base.SoundTrackStorage;
 import com.busylee.audiobook.entities.SoundTrack;
 import com.busylee.audiobook.service.CustomService;
 
@@ -62,6 +63,7 @@ public class DownloadService extends CustomService implements SoundTrackDownload
 
 	@Override
 	public void onSoundTrackDownloadComplete(SoundTrack soundTrack) {
+        updateTrackInfo(soundTrack);
 		startNext();
 		if(mDownLoadServiceObserver != null)
 			mDownLoadServiceObserver.onSoundTrackDownloadSuccess(soundTrack);
@@ -79,6 +81,14 @@ public class DownloadService extends CustomService implements SoundTrackDownload
 		if(mDownLoadServiceObserver != null)
 			mDownLoadServiceObserver.onSoundTrackDownloadProgressChange(progress);
 	}
+
+    private void updateTrackInfo(SoundTrack soundTrack){
+        getSoundTrackStorage().updateTrackInfo(soundTrack);
+    }
+
+    private SoundTrackStorage getSoundTrackStorage(){
+        return getCustomApplication().getSoundTrackStorage();
+    }
 
 	public interface DownLoadServiceObserver{
 		public void onSoundTrackDownloadError();

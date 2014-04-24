@@ -51,12 +51,15 @@ public class TrackAdapter extends BaseAdapter {
         final SoundTrack soundTrack = getSoundTrack(i);
 
         ((TextView) view.findViewById(R.id.tvTrackName)).setText(
-				soundTrack.getFileAssetUrl()
+				soundTrack.getFileName()
 		);
 
-		((TextView) view.findViewById(R.id.tvProgress)).setText(
-				String.valueOf(soundTrack.getDownloadProgress()) + "/100"
-		);
+        if( !soundTrack.isDownloaded()  )
+            ((TextView) view.findViewById(R.id.tvProgress)).setText(
+                    String.valueOf(soundTrack.getDownloadProgress()) + "/100"
+            );
+        else
+            ((TextView) view.findViewById(R.id.tvProgress)).setText("Downloaded");
 
 		(view.findViewById(R.id.btnPlay)).setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -73,6 +76,9 @@ public class TrackAdapter extends BaseAdapter {
 					mSoundTrackClickListener.onDownloadClick(soundTrack);
 			}
 		});
+
+        if(soundTrack.isDownloaded())
+            (view.findViewById(R.id.btnLoad)).setVisibility(View.GONE);
 
         return view;
     }

@@ -3,6 +3,7 @@ package com.busylee.audiobook.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import com.busylee.audiobook.AudioBookApplication;
 
 /**
  * Created by busylee on 14.04.14.
@@ -28,4 +29,9 @@ public class CustomService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
+    protected AudioBookApplication getCustomApplication(){
+        return (AudioBookApplication) getApplication();
+    }
+
 }

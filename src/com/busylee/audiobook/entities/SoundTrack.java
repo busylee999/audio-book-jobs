@@ -1,24 +1,42 @@
 package com.busylee.audiobook.entities;
 
 import android.content.ContentValues;
+import android.database.Cursor;
+import com.busylee.audiobook.base.SoundTrackStorage;
 
 /**
  * Created by busylee on 4/14/14.
  */
 public class SoundTrack {
 
-    private int mTrackId;
-    private String mFileAssetUrl;
+    public final static int NO_ID = -1;
+
+    public final static int DOWNLOADED = 1;
+    public final static int NOT_DOWNLOADED = 0;
+
+    private int mTrackId = NO_ID;
+    private String mFileName;
+    private String mFileUrl;
 	private String mFilePath;
-	private String mFileUrl;
 	private boolean mIsDownloaded;
 	private int mDownloadProgress;
 
-    public SoundTrack(int trackId, String fileAssetUrl, String fileUrl, boolean isDownloaded){
-        mTrackId = trackId;
-        mFileAssetUrl = fileAssetUrl;
+    public SoundTrack(String fileName, String fileUrl, String filePath, boolean isDownloaded){
+        mFileName = fileName;
 		mFileUrl = fileUrl;
+        mFilePath = filePath;
 		mIsDownloaded = isDownloaded;
+    }
+
+    public SoundTrack(Cursor cursor){
+        mTrackId = cursor.getInt(cursor.getColumnIndex(SoundTrackStorage.SoundTrackDBHelper.FIELD_ID));
+        mFileName = cursor.getString(cursor.getColumnIndex(SoundTrackStorage.SoundTrackDBHelper.FIELD_NAME));
+        mFileUrl = cursor.getString(cursor.getColumnIndex(SoundTrackStorage.SoundTrackDBHelper.FIELD_LINK));
+        mFilePath = cursor.getString(cursor.getColumnIndex(SoundTrackStorage.SoundTrackDBHelper.FIELD_FILE_PATH));
+
+        mIsDownloaded = false;
+        if( cursor.getInt(cursor.getColumnIndex(SoundTrackStorage.SoundTrackDBHelper.FIELD_DOWNLOADED)) == DOWNLOADED )
+            mIsDownloaded = true;
     }
 
 	public int getDownloadProgress() {
@@ -46,19 +64,11 @@ public class SoundTrack {
 	}
 
 	/**
-	 * Получить путь к файлу в ассетах
-	 * @return
-	 */
-    public String getFileAssetUrl(){
-        return mFileAssetUrl;
-    }
-
-	/**
 	 * Имя файла
 	 * @return
 	 */
 	public String getFileName(){
-		return String.valueOf(mTrackId);
+		return mFileName;
 	}
 
 	/**
@@ -87,6 +97,10 @@ public class SoundTrack {
 
     public ContentValues getContentValues(){
         ContentValues contentValues = new ContentValues();
+        contentValues.put(SoundTrackStorage.SoundTrackDBHelper.FIELD_NAME, mFileName);
+        contentValues.put(SoundTrackStorage.SoundTrackDBHelper.FIELD_LINK, mFileUrl);
+        contentValues.put(SoundTrackStorage.SoundTrackDBHelper.FIELD_FILE_PATH, mFilePath);
+        contentValues.put(SoundTrackStorage.SoundTrackDBHelper.FIELD_DOWNLOADED, mIsDownloaded ? DOWNLOADED : NOT_DOWNLOADED);
         return contentValues;
     }
 

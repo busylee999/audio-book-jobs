@@ -1,6 +1,5 @@
 package com.busylee.audiobook.service.media;
 
-import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.PowerManager;
 import com.busylee.audiobook.R;
@@ -39,11 +38,6 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
         mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnErrorListener(this);
-    }
-
-    protected void setAssetResource(AssetFileDescriptor assetFileDescriptor) throws IOException {
-        mMediaPlayer.setDataSource(assetFileDescriptor.getFileDescriptor(), assetFileDescriptor.getStartOffset(), assetFileDescriptor.getLength());
-        prepare();
     }
 
 	protected void playFilePath(String soundTrackPath) throws IOException {

@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class SoundTrackStorage {
 
-    private SoundTrackDBHelper dbHelper;
+    private static SoundTrackDBHelper mSoundTrackDBHelper;
 
     List<SoundTrack> mSoundTrackList = new ArrayList<SoundTrack>();
 
@@ -26,13 +26,12 @@ public class SoundTrackStorage {
 		public static final SoundTrackStorage HOLDER_INSTANCE = new SoundTrackStorage();
 	}
 
-	public static SoundTrackStorage getInstance() {
+	public static SoundTrackStorage getInstance(Context context) {
+        SingletonHolder.HOLDER_INSTANCE.initializeSoundTracks(context);
 		return SingletonHolder.HOLDER_INSTANCE;
 	}
 
     private SoundTrackStorage(){
-
-        initializeSoundTracks();
     }
 
     public List<SoundTrack> getSoundTrackList(){
@@ -47,6 +46,11 @@ public class SoundTrackStorage {
             mSoundTrackNumber = 0;
 
         return mSoundTrackList.get(mSoundTrackNumber);
+    }
+
+    public void updateTrackInfo(SoundTrack soundTrack){
+        if(mSoundTrackDBHelper != null)
+            mSoundTrackDBHelper.updateSoundTrack(soundTrack);
     }
 
     public SoundTrack getCurrentSoundTrack(){
@@ -68,15 +72,21 @@ public class SoundTrackStorage {
         return null;
     }
 
-    private void initializeSoundTracks(){
-        int number = 0;
-        for(String fileUrl : TrackBase.trackFileList){
-            mSoundTrackList.add(initializeSoundTrack(number ++ , String.valueOf(number) , fileUrl));
-        }
-    }
+    /**
+     * Загрузить треки из бд в память
+     */
+    private void initializeSoundTracks(Context context){
+        if(mSoundTrackDBHelper == null)
+            mSoundTrackDBHelper = new SoundTrackDBHelper(context);
 
-    private SoundTrack initializeSoundTrack(int number, String assetFilePath, String fileUrl){
-        return new SoundTrack(number, assetFilePath, fileUrl, false);
+        Cursor soundTrackCursor = mSoundTrackDBHelper.getSoundTrackCursor();
+
+        if(soundTrackCursor != null)
+            if(soundTrackCursor.moveToFirst())
+                do{
+                    mSoundTrackList.add(new SoundTrack(soundTrackCursor));
+                } while(soundTrackCursor.moveToNext());
+
     }
 
     public class SoundTrackDBHelper extends SQLiteOpenHelper {
@@ -105,12 +115,14 @@ public class SoundTrackStorage {
                     + FIELD_NAME + " text,"
                     + FIELD_LINK + " text,"
                     + FIELD_FILE_PATH + " text,"
-                    + FIELD_DOWNLOADED + " integer,"
+                    + FIELD_DOWNLOADED + " integer"
                     + ");");
+
+            insertSoundTracks(db, TrackBase.trackFileList);
+
         }
 
-        public void inserSoundTracks(List<SoundTrack> soundTrackList){
-            SQLiteDatabase database = dbHelper.getWritableDatabase();
+        public void insertSoundTracks(SQLiteDatabase database, List<SoundTrack> soundTrackList){
 
             database.beginTransaction();
 
@@ -129,7 +141,7 @@ public class SoundTrackStorage {
         }
 
         public void insertSoundTrack(SQLiteDatabase database, SoundTrack soundTrack){
-            ContentValues values = new ContentValues();
+            ContentValues values = soundTrack.getContentValues();
 
             if(database.insert(TABLE_NAME, null, values) < 0)
                 throw new SQLException();
@@ -140,10 +152,19 @@ public class SoundTrackStorage {
 
         }
 
-        Cursor getCoundTrackCursor(){
-            SQLiteDatabase database = dbHelper.getWritableDatabase();
+        Cursor getSoundTrackCursor(){
+            SQLiteDatabase database = getWritableDatabase();
 
             return database.query(TABLE_NAME, null,null, null,null,null, FIELD_ID + " ASC");
+        }
+
+        public void updateSoundTrack(SoundTrack soundTrack) {
+            SQLiteDatabase database = getWritableDatabase();
+
+            database.update(TABLE_NAME,
+                    soundTrack.getContentValues(),
+                    FIELD_ID + "=" + soundTrack.getTrackId(),
+                    null);
         }
     }
 

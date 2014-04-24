@@ -1,6 +1,5 @@
 package com.busylee.audiobook.service.media;
 
-import android.content.res.AssetFileDescriptor;
 import com.busylee.audiobook.base.SoundTrackStorage;
 import com.busylee.audiobook.entities.SoundTrack;
 
@@ -21,8 +20,12 @@ public class MediaPlayerService extends MediaBindingService {
 
     }
 
+    private SoundTrackStorage getSoundTrackStorage(){
+        return getCustomApplication().getSoundTrackStorage();
+    }
+
     private void initializeStorage(){
-        mSoundTrackStorage = SoundTrackStorage.getInstance();
+        mSoundTrackStorage = getSoundTrackStorage();
     }
 
     @Override
@@ -48,7 +51,6 @@ public class MediaPlayerService extends MediaBindingService {
     private void playSoundTrack(SoundTrack soundTrack){
         if (soundTrack != null){
             try {
-//                setAssetResource(getAssetFileDescriptor(soundTrack.getFileAssetUrl()));
 				playFilePath(soundTrack.getFilePath());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -57,10 +59,6 @@ public class MediaPlayerService extends MediaBindingService {
 
         if(mObserver != null)
             mObserver.onSoundTrackChange(soundTrack);
-    }
-
-    private AssetFileDescriptor getAssetFileDescriptor(String fileAssetUrl) throws IOException {
-        return getApplicationContext().getAssets().openFd(fileAssetUrl);
     }
 
 }
