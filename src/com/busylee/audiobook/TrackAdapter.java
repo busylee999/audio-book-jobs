@@ -77,8 +77,7 @@ public class TrackAdapter extends BaseAdapter {
 			}
 		});
 
-        if(soundTrack.isDownloaded())
-            (view.findViewById(R.id.btnLoad)).setVisibility(View.GONE);
+        (view.findViewById(R.id.btnLoad)).setVisibility(soundTrack.isDownloaded() ? View.GONE : View.VISIBLE);
 
         return view;
     }
