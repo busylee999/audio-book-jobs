@@ -1,4 +1,4 @@
-package com.busylee.audiobook.service;
+package com.busylee.audiobook.service.media;
 
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
@@ -46,6 +46,11 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
         prepare();
     }
 
+	protected void playFilePath(String soundTrackPath) throws IOException {
+		mMediaPlayer.setDataSource(soundTrackPath);
+		prepare();
+	}
+
     private void prepare()  {
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.prepareAsync();
@@ -90,7 +95,7 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
     @Override
     protected int getCurrentIcon(){
         if(mMediaPlayer.isPlaying())
-            return ForegroundService.NOTIFICATION_ICON_PLAY_ID;
+            return NOTIFICATION_ICON_PLAY_ID;
         else
             return NOTIFICATION_ICON_PAUSE_ID;
     }

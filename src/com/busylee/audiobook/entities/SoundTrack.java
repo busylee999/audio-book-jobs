@@ -8,20 +8,79 @@ import android.content.ContentValues;
 public class SoundTrack {
 
     private int mTrackId;
-    private String mName;
-    private String mFileUrl;
-    private String mFilePath;
-    private boolean mIsDownloaded;
+    private String mFileAssetUrl;
+	private String mFilePath;
+	private String mFileUrl;
+	private boolean mIsDownloaded;
+	private int mDownloadProgress;
 
-    public SoundTrack(int trackId, String fileAssetUrl){
+    public SoundTrack(int trackId, String fileAssetUrl, String fileUrl, boolean isDownloaded){
         mTrackId = trackId;
-        mFilePath = fileAssetUrl;
+        mFileAssetUrl = fileAssetUrl;
+		mFileUrl = fileUrl;
+		mIsDownloaded = isDownloaded;
     }
 
+	public int getDownloadProgress() {
+		return mDownloadProgress;
+	}
+
+	public void setDownloadProgress(int downloadProgress) {
+		mDownloadProgress = downloadProgress;
+	}
+
+	public void downloaded(){
+		mIsDownloaded = true;
+	}
+
+	public boolean isDownloaded(){
+		return mIsDownloaded;
+	}
+
+	/**
+	 * Получение ссылки для скачивания данного трека
+	 * @return
+	 */
+	public String getFileUrl() {
+		return mFileUrl;
+	}
+
+	/**
+	 * Получить путь к файлу в ассетах
+	 * @return
+	 */
     public String getFileAssetUrl(){
-        return mFilePath;
+        return mFileAssetUrl;
     }
 
+	/**
+	 * Имя файла
+	 * @return
+	 */
+	public String getFileName(){
+		return String.valueOf(mTrackId);
+	}
+
+	/**
+	 * Получение абсолютного пути к файлу
+	 * @return
+	 */
+	public String getFilePath(){
+		return mFilePath;
+	}
+
+	/**
+	 * Задать путь к файлу трека
+	 * @param filePath
+	 */
+	public void setFilePath(String filePath){
+		mFilePath = filePath;
+	}
+
+	/**
+	 * Получение Id трека
+	 * @return
+	 */
     public int getTrackId(){
         return mTrackId;
     }
