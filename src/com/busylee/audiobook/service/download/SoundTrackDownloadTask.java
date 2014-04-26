@@ -14,14 +14,26 @@ import java.net.URL;
  */
 public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack> {
 
+	public static class Errors {
+		public static int E_NO_ERROR = 0;
+
+		public static int E_UNKNOWN_ERROR = 100;
+		public static int E_HTTP_RESPONSE_NOT_OK  = E_UNKNOWN_ERROR + 1;
+		public static int E_NOT_ENOUGH_FREE_SPACE = E_UNKNOWN_ERROR + 2;
+		public static int E_FILE_CREATION         = E_UNKNOWN_ERROR + 3;
+
+	}
+
 	static final String LOG_TAG = "SoundTrackDownloadTask";
 	static final int DATA_BUFFER_LENGTH = 4096;
 
 	private SoundTrackDownloadObserver mSoundTrackDownloadCompleteObserver;
 	private SoundTrack mSoundTrack;
 	private Context mContext;
+	private DownloadService.TSaveFileMode mSaveFileMode;
+	private int mError = Errors.E_NO_ERROR;
 
-	public SoundTrackDownloadTask(SoundTrack soundTrack, SoundTrackDownloadObserver soundTrackDownloadCompleteObserver, Context context){
+	public SoundTrackDownloadTask(SoundTrack soundTrack, SoundTrackDownloadObserver soundTrackDownloadCompleteObserver, Context context, DownloadService.TSaveFileMode saveFileMode){
 		super();
 
 		mSoundTrack = soundTrack;
@@ -29,19 +41,26 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 		mSoundTrackDownloadCompleteObserver = soundTrackDownloadCompleteObserver;
 
 		mContext = context;
+
+		mSaveFileMode = saveFileMode;
 	}
 
     @Override
     protected SoundTrack doInBackground(Void... params) {
+		File file;
 
-		File file = new File(mContext.getFilesDir(), mSoundTrack.getFileName());
+		file = getFileForSoundTrack();
 
-		mSoundTrack.setFilePath(file.getAbsolutePath());
+		if(file != null) {
 
-		if(downLoadFile(mSoundTrack.getFileUrl(), file)) {
-			mSoundTrack.downloaded();
-			return mSoundTrack;
-		}
+			mSoundTrack.setFilePath(file.getAbsolutePath());
+
+			if (downLoadFile(mSoundTrack.getFileUrl(), file)) {
+				mSoundTrack.downloaded();
+				return mSoundTrack;
+			}
+		} else
+			setError(Errors.E_FILE_CREATION);
 
         return null;
     }
@@ -59,7 +78,7 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 			if(soundTrack != null)
 				mSoundTrackDownloadCompleteObserver.onSoundTrackDownloadComplete(soundTrack);
 			else
-				mSoundTrackDownloadCompleteObserver.onSoundTrackDownloadError();
+				mSoundTrackDownloadCompleteObserver.onSoundTrackDownloadError(mError, mSoundTrack);
 
 	}
 
@@ -75,6 +94,7 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
 				Log.e(LOG_TAG, "Http connection response is NOT OK");
+				setError(Errors.E_HTTP_RESPONSE_NOT_OK);
                 return false;
             }
 
@@ -82,29 +102,36 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 
             int fileLength = connection.getContentLength();
 
-			Log.d(LOG_TAG, "File lengt is" + fileLength);
+			Log.d(LOG_TAG, "File length is" + fileLength);
 
-            // download the file
-            input = connection.getInputStream();
-            output = new FileOutputStream(file);
+			/* проверяем достаточно ли свободно места для
+			  * сохранения файла
+			 */
+			if (fileLength > file.getFreeSpace()){
+				// download the file
+				input = connection.getInputStream();
+				output = new FileOutputStream(file);
 
-            byte data[] = new byte[DATA_BUFFER_LENGTH];
-            int count;
-            while ((count = input.read(data)) != -1) {
-                // allow canceling with back button
-                if (isCancelled()) {
-                    input.close();
-                    return false;
-                }
-                total += count;
+				byte data[] = new byte[DATA_BUFFER_LENGTH];
+				int count;
+				while ((count = input.read(data)) != -1) {
+					// allow canceling with back button
+					if (isCancelled()) {
+						input.close();
+						return false;
+					}
+					total += count;
 
-                if (fileLength > 0)
-                    publishProgress((int) (total * 100 / fileLength));
+					if (fileLength > 0)
+						publishProgress((int) (total * 100 / fileLength));
 
-                output.write(data, 0, count);
-            }
+					output.write(data, 0, count);
+				}
+			} else
+				setError(Errors.E_NOT_ENOUGH_FREE_SPACE); //не достаточно свободного места для загрузки файла
+
         } catch (Exception e) {
-
+			setError(Errors.E_UNKNOWN_ERROR);
 			e.printStackTrace();
 			return false;
         } finally {
@@ -123,9 +150,52 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
        return true;
     }
 
+	/**
+	 * Устанавливаем ошибку времени выполнения задачи
+	 * @param error
+	 */
+	private void setError(int error){
+		mError = error;
+	}
+
+	/**
+	 * Получаем файл для трека
+	 * @return
+	 */
+	public File getFileForSoundTrack(){
+		File file;
+
+		if(mSaveFileMode == DownloadService.TSaveFileMode.INTERNAL)
+			file = getInternalFile(mContext, mSoundTrack);
+		else
+			file = getExternalFile(mContext, mSoundTrack);
+
+		return file;
+	}
+
+	/**
+	 * Создание файла во внутренней памяти
+	 * @param context
+	 * @param soundTrack
+	 * @return
+	 */
+	public static File getInternalFile(Context context, SoundTrack soundTrack){
+		return new File(context.getFilesDir(), soundTrack.getFileName());
+	}
+
+	/**
+	 * Создание файла во внешней памяти
+	 * @param context
+	 * @param soundTrack
+	 * @return
+	 */
+	public static File getExternalFile(Context context, SoundTrack soundTrack){
+		return new File(context.getExternalFilesDir(null), soundTrack.getFileName());
+	}
+
 	public interface SoundTrackDownloadObserver {
 		public void onSoundTrackDownloadComplete (SoundTrack soundTrack);
-		public void onSoundTrackDownloadError();
+		public void onSoundTrackDownloadError(int error, SoundTrack soundTrack);
 		public void onSoundTrackDownloadProgress(int progress);
 	}
 

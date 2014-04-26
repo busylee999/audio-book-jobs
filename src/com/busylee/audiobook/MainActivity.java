@@ -121,7 +121,8 @@ public class MainActivity extends BindingActivity implements TrackAdapter.SoundT
 	}
 
 	@Override
-	public void onSoundTrackDownloadError() {
+	public void onSoundTrackDownloadError(int error, SoundTrack soundTrack) {
+		Toast.makeText(this, "Track downloading error(" + error +"). Track id = " + soundTrack.getTrackId(), Toast.LENGTH_LONG).show();
 		mTrackAdapter.notifyDataSetChanged();
 	}
 

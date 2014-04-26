@@ -1,8 +1,10 @@
 package com.busylee.audiobook.service.download;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import com.busylee.audiobook.base.SoundTrackStorage;
 import com.busylee.audiobook.entities.SoundTrack;
 import com.busylee.audiobook.service.CustomService;
@@ -13,7 +15,9 @@ import java.util.Queue;
 /**
  * Created by busylee on 17.04.14.
  */
-public class DownloadService extends CustomService implements SoundTrackDownloadTask.SoundTrackDownloadObserver {
+public class DownloadService extends CustomService implements SoundTrackDownloadTask.SoundTrackDownloadObserver, SharedPreferences.OnSharedPreferenceChangeListener {
+
+	public final static String PREF_KEY_SAVE_FILE_MODE = "SAVE_FILE_MODE";
 
 	boolean mNeedToStart = true;
 
@@ -21,8 +25,15 @@ public class DownloadService extends CustomService implements SoundTrackDownload
 
 	Queue<SoundTrackDownloadTask> mDownloadTaskQueue = new LinkedList<SoundTrackDownloadTask>();
 
+	TSaveFileMode mSaveFileMode = TSaveFileMode.INTERNAL;
+
+	public static enum TSaveFileMode{
+		INTERNAL,
+		EXTERNAL
+	}
+
 	public void addDownloadTask(SoundTrack soundTrack){
-		mDownloadTaskQueue.add(new SoundTrackDownloadTask(soundTrack, this, getApplicationContext()));
+		mDownloadTaskQueue.add(new SoundTrackDownloadTask(soundTrack, this, getApplicationContext(), mSaveFileMode));
 
 		startNext();
 	}
@@ -57,6 +68,19 @@ public class DownloadService extends CustomService implements SoundTrackDownload
 	}
 
 	@Override
+	public void onCreate(){
+		super.onCreate();
+
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+		sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+
+		readNecessaryPreferences(sharedPreferences);
+
+
+	}
+
+	@Override
 	public IBinder onBind(Intent intent) {
 		return mBinder;
 	}
@@ -70,10 +94,10 @@ public class DownloadService extends CustomService implements SoundTrackDownload
 	}
 
 	@Override
-	public void onSoundTrackDownloadError() {
-		startNext();
+	public void onSoundTrackDownloadError(int error, SoundTrack soundTrack) {
+		//TODO в данной ситуации необходимо дождаться адекватного действия от задачи
 		if(mDownLoadServiceObserver != null)
-			mDownLoadServiceObserver.onSoundTrackDownloadError();
+			mDownLoadServiceObserver.onSoundTrackDownloadError(error, soundTrack);
 	}
 
 	@Override
@@ -90,8 +114,32 @@ public class DownloadService extends CustomService implements SoundTrackDownload
         return getCustomApplication().getSoundTrackStorage();
     }
 
+	/**
+	 * Читаем интересные нам настройки
+	 */
+	private void readNecessaryPreferences(SharedPreferences sharedPreferences){
+		setSaveFileMode(sharedPreferences.getInt(PREF_KEY_SAVE_FILE_MODE, 0));
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+		if(s.equals(PREF_KEY_SAVE_FILE_MODE))
+			setSaveFileMode(sharedPreferences.getInt(PREF_KEY_SAVE_FILE_MODE, 0));
+	}
+
+	/**
+	 * Устанавливаем мод сохранения файлов в зависимости от установленной настройки
+	 * @param prefValue
+	 */
+	private void setSaveFileMode(int prefValue){
+		if (prefValue  == 0)
+			mSaveFileMode = TSaveFileMode.INTERNAL;
+		else
+			mSaveFileMode = TSaveFileMode.EXTERNAL;
+	}
+
 	public interface DownLoadServiceObserver{
-		public void onSoundTrackDownloadError();
+		public void onSoundTrackDownloadError(int error, SoundTrack soundTrack);
 		public void onSoundTrackDownloadSuccess(SoundTrack soundTrack);
 		public void onSoundTrackDownloadProgressChange(int progress);
 	}
