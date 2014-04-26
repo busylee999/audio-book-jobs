@@ -107,7 +107,7 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 			/* проверяем достаточно ли свободно места для
 			  * сохранения файла
 			 */
-			if (fileLength > file.getFreeSpace()){
+			if (fileLength < file.getParentFile().getFreeSpace()){
 				// download the file
 				input = connection.getInputStream();
 				output = new FileOutputStream(file);
@@ -127,8 +127,10 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 
 					output.write(data, 0, count);
 				}
-			} else
+			} else {
 				setError(Errors.E_NOT_ENOUGH_FREE_SPACE); //не достаточно свободного места для загрузки файла
+				return false;
+			}
 
         } catch (Exception e) {
 			setError(Errors.E_UNKNOWN_ERROR);
