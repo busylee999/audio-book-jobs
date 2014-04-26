@@ -1,5 +1,8 @@
 package com.busylee.audiobook.service.media;
 
+import android.content.Intent;
+import android.os.Binder;
+import android.os.IBinder;
 import com.busylee.audiobook.base.SoundTrackStorage;
 import com.busylee.audiobook.entities.SoundTrack;
 
@@ -8,15 +11,11 @@ import java.io.IOException;
 /**
  * Created by busylee on 14.04.14.
  */
-public class MediaPlayerService extends MediaBindingService {
-
-    SoundTrackStorage mSoundTrackStorage;
+public class MediaPlayerService extends AudioFocusMasterService {
 
     @Override
     public void onCreate(){
         super.onCreate();
-
-        initializeStorage();
 
     }
 
@@ -24,28 +23,32 @@ public class MediaPlayerService extends MediaBindingService {
         return getCustomApplication().getSoundTrackStorage();
     }
 
-    private void initializeStorage(){
-        mSoundTrackStorage = getSoundTrackStorage();
-    }
-
-    @Override
-    public void playNext(){
+    /**
+     * Начать проигрывание следующего трека
+     */
+    public void playNext() {
         reset();
 
-        playSoundTrack(mSoundTrackStorage.getNextSoundTrack());
+        playSoundTrack(getSoundTrackStorage().getNextSoundTrack());
 
     }
 
-    @Override
+    /**
+     * Текущий трек
+     * @return
+     */
     public SoundTrack getCurrentSoundTrack() {
-        return mSoundTrackStorage.getCurrentSoundTrack();
+        return getSoundTrackStorage().getCurrentSoundTrack();
     }
 
-    @Override
+    /**
+     * Начать проигрывать трек по Id
+     * @param trackId
+     */
     public void playSoundTrackById(int trackId) {
         reset();
 
-        playSoundTrack(mSoundTrackStorage.getSoundTrackById(trackId));
+        playSoundTrack(getSoundTrackStorage().getSoundTrackById(trackId));
     }
 
     private void playSoundTrack(SoundTrack soundTrack){
@@ -59,6 +62,25 @@ public class MediaPlayerService extends MediaBindingService {
 
         if(mObserver != null)
             mObserver.onSoundTrackChange(soundTrack);
+    }
+
+    // Binder given to clients
+    private final IBinder mBinder = new LocalBinder();
+
+    /**
+     * Class used for the client Binder.  Because we know this service always
+     * runs in the same process as its clients, we don't need to deal with IPC.
+     */
+    public class LocalBinder extends Binder {
+        public MediaPlayerService getService() {
+            // Return this instance of LocalService so clients can call public methods
+            return MediaPlayerService.this;
+        }
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mBinder;
     }
 
 }

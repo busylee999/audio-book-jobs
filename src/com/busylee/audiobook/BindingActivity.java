@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import com.busylee.audiobook.entities.SoundTrack;
 import com.busylee.audiobook.service.download.DownloadService;
-import com.busylee.audiobook.service.media.MediaBindingService;
 import com.busylee.audiobook.service.media.MediaPlayerMaster;
 import com.busylee.audiobook.service.media.MediaPlayerService;
 
@@ -18,7 +17,7 @@ import com.busylee.audiobook.service.media.MediaPlayerService;
  */
 public abstract class BindingActivity extends Activity implements MediaPlayerMaster.MediaPlayerObserver, DownloadService.DownLoadServiceObserver {
 
-    MediaBindingService mMediaService;
+    MediaPlayerService mMediaService;
 
 	DownloadService mDownloadService;
 
@@ -111,7 +110,7 @@ public abstract class BindingActivity extends Activity implements MediaPlayerMas
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            MediaBindingService.LocalBinder binder = (MediaBindingService.LocalBinder) service;
+            MediaPlayerService.LocalBinder binder = (MediaPlayerService.LocalBinder) service;
             mMediaService = binder.getService();
             mMediaService.setObserver(BindingActivity.this);
             mMediaBound = true;
