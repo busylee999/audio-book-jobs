@@ -25,18 +25,51 @@ public abstract class BindingActivity extends Activity implements MediaPlayerMas
     boolean mMediaBound = false;
 	boolean mDownloadBound = false;
 
+    protected void seekTo(int seek){
+        mMediaService.seekTo(seek);
+    }
+
+    /**
+     * Получить текущую позицию для текущего трека
+     * @return
+     */
+    protected int getCurrentPosition(){
+        return mMediaService.getCurrentPosition();
+    }
+
+    /**
+     * Получить продолжительность текущего трека
+     * @return
+     */
+    protected int getDuration(){
+        return mMediaService.getDuration();
+    }
+
+    /**
+     * Начать проигрывание следующего трека
+     */
     protected void playNextTrack(){
         mMediaService.playNext();
     }
 
+    /**
+     * Начать проигрывать трек по Id
+     * @param trackId
+     */
     protected void playTrackById(int trackId){
         mMediaService.playSoundTrackById(trackId);
     }
 
+    /**
+     * Пауза
+     */
     protected void pausePlay(){
         mMediaService.pausePlay();
     }
 
+    /**
+     * Возобновить проигрывание
+     */
     protected void resumePlay(){
         mMediaService.resumePlay();
     }

@@ -3,15 +3,17 @@ package com.busylee.audiobook;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.busylee.audiobook.base.SoundTrackStorage;
 import com.busylee.audiobook.entities.SoundTrack;
 
-public class MainActivity extends BindingActivity implements TrackAdapter.SoundTrackClickListener {
+public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundTrackClickListener {
 
     TextView tvCurrentTrack;
 	TrackAdapter mTrackAdapter;
+    SeekBar mSeekBar;
 
     /**
      * Called when the activity is first created.
@@ -26,12 +28,12 @@ public class MainActivity extends BindingActivity implements TrackAdapter.SoundT
 
     protected void showCurrentTrack(final SoundTrack soundTrack){
         runOnUiThread(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        tvCurrentTrack.setText(soundTrack.getFileName());
-                    }
+            new Runnable() {
+                @Override
+                public void run() {
+                    tvCurrentTrack.setText(soundTrack.getFileName());
                 }
+            }
         );
     }
 
@@ -60,6 +62,9 @@ public class MainActivity extends BindingActivity implements TrackAdapter.SoundT
 
         tvCurrentTrack = (TextView) findViewById(R.id.tvCurrentTrack);
 
+        mSeekBar = (SeekBar) findViewById(R.id.sbCurrentTrackSeekBar);
+        mSeekBar.setOnSeekBarChangeListener(this);
+
         initializeTrackList();
 
     }
@@ -81,6 +86,15 @@ public class MainActivity extends BindingActivity implements TrackAdapter.SoundT
         lvTrackList.setAdapter(
 			getAdapter()
         );
+    }
+    
+    private void initializeSeekBar(){
+        initializeSeekBarPerforming();
+    }
+
+    @Override
+    protected SeekBar getSeekBar() {
+        return mSeekBar;
     }
 
     @Override
@@ -113,6 +127,8 @@ public class MainActivity extends BindingActivity implements TrackAdapter.SoundT
         showCurrentTrack(
                 getCurrentTrack()
         );
+
+        initializeSeekBar();
     }
 
 	@Override
@@ -128,17 +144,13 @@ public class MainActivity extends BindingActivity implements TrackAdapter.SoundT
 
 	@Override
 	public void onSoundTrackDownloadSuccess(SoundTrack soundTrack) {
+        mTrackAdapter.notifyDataSetChanged();
 		Toast.makeText(this, "Track downloaded id=" + soundTrack.getTrackId(), Toast.LENGTH_LONG).show();
 	}
 
 	@Override
 	public void onSoundTrackDownloadProgressChange(int progress) {
-		runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				mTrackAdapter.notifyDataSetChanged();
-			}
-		});
+        mTrackAdapter.notifyDataSetChanged();
 	}
 
 	@Override

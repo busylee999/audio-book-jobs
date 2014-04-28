@@ -38,6 +38,7 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
         mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnErrorListener(this);
+//        mMediaPlayer.set
     }
 
 	protected void playFilePath(String soundTrackPath) throws IOException {
@@ -48,6 +49,30 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
     private void prepare()  {
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.prepareAsync();
+    }
+
+    /**
+     * Переместить воспроизведение на указанную позицию
+     * @param seek
+     */
+    public void seekTo(int seek){
+        mMediaPlayer.seekTo(seek);
+    }
+
+    /**
+     * Возвращает текущую позицию в треке
+     * @return
+     */
+    public int getCurrentPosition(){
+        return mMediaPlayer.getCurrentPosition();
+    }
+
+    /**
+     * Возвращает продолжительность текущего трека
+     * @return
+     */
+    public int getDuration(){
+        return mMediaPlayer.getDuration();
     }
 
     public void startPlay(){
@@ -96,6 +121,8 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
+        if(mObserver != null)
+            mObserver.onPrepared();
         startPlay();
     }
 
@@ -117,6 +144,8 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
         public void onPlayResume();
         public void onPlayPause();
         public void onPlayStop();
+
+        public void onPrepared();
 
         public void onSoundTrackChange(SoundTrack soundTrack);
 
