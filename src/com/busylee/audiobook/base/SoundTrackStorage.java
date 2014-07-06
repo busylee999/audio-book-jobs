@@ -100,6 +100,8 @@ public class SoundTrackStorage {
         public final static String FIELD_LINK = "link";
         public final static String FIELD_FILE_PATH = "file_path";
         public final static String FIELD_DOWNLOADED = "downloaded";
+        public final static String FIELD_VIEWED = "viewed";
+        public final static String FIELD_SEEK = "seek";
 
         public SoundTrackDBHelper(Context context) {
             // конструктор суперкласса
@@ -115,7 +117,9 @@ public class SoundTrackStorage {
                     + FIELD_NAME + " text,"
                     + FIELD_LINK + " text,"
                     + FIELD_FILE_PATH + " text,"
-                    + FIELD_DOWNLOADED + " integer"
+                    + FIELD_DOWNLOADED + " integer,"
+                    + FIELD_VIEWED + " integer,"
+                    + FIELD_SEEK + " integer"
                     + ");");
 
             insertSoundTracks(db, TrackBase.trackFileList);

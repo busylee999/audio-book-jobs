@@ -22,6 +22,14 @@ public class AudioBookApplication extends Application {
         mSoundTrackStorage = SoundTrackStorage.getInstance(this);
     }
 
+    /**
+     * Получаем настройки для приложения
+     * @return
+     */
+    public Settings getSettings(){
+        return Settings.getInstance(this);
+    }
+
     public synchronized SoundTrackStorage getSoundTrackStorage(){
         return mSoundTrackStorage;
     }

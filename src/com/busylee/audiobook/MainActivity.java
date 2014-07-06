@@ -11,6 +11,8 @@ import com.busylee.audiobook.entities.SoundTrack;
 
 public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundTrackClickListener {
 
+    static final String TAG = "MainActivity";
+
     TextView tvCurrentTrack;
 	TrackAdapter mTrackAdapter;
     SeekBar mSeekBar;
@@ -26,17 +28,17 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
         initializeViews();
     }
 
+    /**
+     * Отображаем текущий трек
+     * @param soundTrack
+     */
     protected void showCurrentTrack(final SoundTrack soundTrack){
-        runOnUiThread(
-            new Runnable() {
-                @Override
-                public void run() {
-                    tvCurrentTrack.setText(soundTrack.getFileName());
-                }
-            }
-        );
+        tvCurrentTrack.setText(soundTrack.getFileName());
     }
 
+    /**
+     * Инициализируем вьюшки
+     */
     private void initializeViews(){
 
         (findViewById(R.id.btnPause)).setOnClickListener(new View.OnClickListener() {
@@ -68,28 +70,71 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
         initializeTrackList();
 
     }
-    
+
+    /**
+     * Получаем хранилище треков
+     * @return
+     */
     private SoundTrackStorage getSoundTrackStorage(){
-        return ((AudioBookApplication) getApplication()).getSoundTrackStorage();
+        return getCustomApplication().getSoundTrackStorage();
     }
 
-	private TrackAdapter getAdapter(){
+    /**
+     * Получаем наше кастомное приложение
+     * @return
+     */
+    private AudioBookApplication getCustomApplication() {
+        return (AudioBookApplication) getApplication();
+    }
+
+    /**
+     * Получаем адаптер треков
+     * @return
+     */
+	private TrackAdapter getTrackAdapter(){
 		if (mTrackAdapter == null)
 			mTrackAdapter = new TrackAdapter(this, getSoundTrackStorage() , this);
 
 		return mTrackAdapter;
 	}
 
+    /**
+     * Инициализируем список треков на экране
+     */
     private void initializeTrackList(){
          ListView lvTrackList = (ListView) findViewById(R.id.lvTrackList);
 
         lvTrackList.setAdapter(
-			getAdapter()
+			getTrackAdapter()
         );
     }
-    
+
+    /**
+     * Инициализируем сик бар
+     */
     private void initializeSeekBar(){
         initializeSeekBarPerforming();
+    }
+
+    /**
+     * Пробуем восстановить последнее место воспроизведения
+     */
+    private void reloadLast(){
+        int seek = getSettings().getLastSeek();
+        int trackId = getSettings().getLastTrackId();
+
+        if(trackId == -1 || seek == -1){
+            Locator.getLogger().writeLog(TAG, "Not enougth data to " +
+                    "reload last track. trackId = " + trackId + " seek = " + seek);
+            return;
+        }
+
+        reloadLast(trackId, seek);
+
+    }
+
+    private Settings getSettings(){
+        return getCustomApplication().getSettings();
     }
 
     @Override
@@ -103,8 +148,13 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
     }
 
     @Override
-    public void onPlayPause() {
-
+    public void onPlayPause(int seek) {
+        SoundTrack track = getCurrentTrack();
+        if (track != null) {
+            getSettings().storeLastTrackId(track.getTrackId());
+            getSettings().storeLastSeek(seek);
+        } else
+            getSettings().resetLast();
     }
 
     @Override
@@ -127,6 +177,8 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
         showCurrentTrack(
                 getCurrentTrack()
         );
+
+        reloadLast();
 
         initializeSeekBar();
     }

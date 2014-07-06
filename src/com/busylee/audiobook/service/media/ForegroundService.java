@@ -14,6 +14,7 @@ public class ForegroundService extends CustomService {
 
     final static int NOTIFICATION_ID = 1;
     final static int NOTIFICATION_ICON_PLAY_ID = R.drawable.play;
+    final static int NOTIFICATION_ICON_PAUSE_ID = R.drawable.pause;
     final static String NOTIFICATION_TITLE = "Jobs Audio Book player";
 
     protected void showForeground(){

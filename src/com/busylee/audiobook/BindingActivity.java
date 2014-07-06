@@ -82,6 +82,10 @@ public abstract class BindingActivity extends Activity implements MediaPlayerMas
 		mDownloadService.addDownloadTask(soundTrack);
 	}
 
+    protected void reloadLast(int trackId, int seek){
+        mMediaService.reloadLast(trackId, seek);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

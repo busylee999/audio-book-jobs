@@ -51,10 +51,10 @@ public class MediaPlayerService extends AudioFocusMasterService {
         playSoundTrack(getSoundTrackStorage().getSoundTrackById(trackId));
     }
 
-    private void playSoundTrack(SoundTrack soundTrack){
+    private void playSoundTrack(SoundTrack soundTrack, int seek){
         if (soundTrack != null){
             try {
-				playFilePath(soundTrack.getFilePath());
+				playFilePath(soundTrack.getFilePath(), seek);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -64,8 +64,23 @@ public class MediaPlayerService extends AudioFocusMasterService {
             mObserver.onSoundTrackChange(soundTrack);
     }
 
+    private void playSoundTrack(SoundTrack soundTrack){
+       playSoundTrack(soundTrack, 0);
+    }
+
     // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
+
+    /**
+     * Восстанавливаем сохраненные параметры последнего воспроизведения
+     * это номер трека и положение seek
+     * @param trackId
+     * @param seek
+     */
+    public void reloadLast(int trackId, int seek) {
+        SoundTrack track = getSoundTrackStorage().getSoundTrackById(trackId);
+        playSoundTrack(track, seek);
+    }
 
     /**
      * Class used for the client Binder.  Because we know this service always
