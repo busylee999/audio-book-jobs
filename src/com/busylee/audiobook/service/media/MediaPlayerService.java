@@ -13,6 +13,11 @@ import java.io.IOException;
  */
 public class MediaPlayerService extends AudioFocusMasterService {
 
+	/** Показывает необходимо ли реагировать на восстановление последнего трека
+	 *  Реагирует только один раз, при первом запуске сервиса
+	 * */
+	private boolean mNeesRestoreLast = true;
+
     @Override
     public void onCreate(){
         super.onCreate();
@@ -103,8 +108,11 @@ public class MediaPlayerService extends AudioFocusMasterService {
      * @param seek
      */
     public void reloadLast(int trackId, int seek) {
-        SoundTrack track = getSoundTrackStorage().getSoundTrackById(trackId);
-        setSoundTrack(track, seek);
+		if(mNeesRestoreLast) {
+			mNeesRestoreLast = false;
+			SoundTrack track = getSoundTrackStorage().getSoundTrackById(trackId);
+			setSoundTrack(track, seek);
+		}
     }
 
 	// Binder given to clients
