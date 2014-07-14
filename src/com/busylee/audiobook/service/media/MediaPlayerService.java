@@ -51,6 +51,11 @@ public class MediaPlayerService extends AudioFocusMasterService {
         playSoundTrack(getSoundTrackStorage().getSoundTrackById(trackId));
     }
 
+	/**
+	 * Проигрывание заданного трека с заданной позиции
+	 * @param soundTrack
+	 * @param seek
+	 */
     private void playSoundTrack(SoundTrack soundTrack, int seek){
         if (soundTrack != null){
             try {
@@ -64,23 +69,46 @@ public class MediaPlayerService extends AudioFocusMasterService {
             mObserver.onSoundTrackChange(soundTrack);
     }
 
+	/**
+	 * Простое проигрывание трека, загрузка файла и автоматическое начало проигрывания с 0
+	 * @param soundTrack
+	 */
     private void playSoundTrack(SoundTrack soundTrack){
        playSoundTrack(soundTrack, 0);
     }
 
-    // Binder given to clients
-    private final IBinder mBinder = new LocalBinder();
+	/**
+	 * Устанавливаем текущий трек в текущей позиции на воспроизведение
+	 * @param soundTrack
+	 * @param seek
+	 */
+	private void setSoundTrack(SoundTrack soundTrack, int seek) {
+		if (soundTrack != null){
+			try {
+				setFilePath(soundTrack.getFilePath(), seek);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		if(mObserver != null)
+			mObserver.onSoundTrackChange(soundTrack);
+	}
 
     /**
      * Восстанавливаем сохраненные параметры последнего воспроизведения
      * это номер трека и положение seek
+	 * Загружаем файл на проигрывание и ставим позицию, на которой остановились.
      * @param trackId
      * @param seek
      */
     public void reloadLast(int trackId, int seek) {
         SoundTrack track = getSoundTrackStorage().getSoundTrackById(trackId);
-        playSoundTrack(track, seek);
+        setSoundTrack(track, seek);
     }
+
+	// Binder given to clients
+	private final IBinder mBinder = new LocalBinder();
 
     /**
      * Class used for the client Binder.  Because we know this service always

@@ -1,6 +1,8 @@
 package com.busylee.audiobook;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SeekBar;
@@ -12,6 +14,7 @@ import com.busylee.audiobook.entities.SoundTrack;
 public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundTrackClickListener {
 
     static final String TAG = "MainActivity";
+	static final int EXIT_OPTION_MENU_ITEM = 0;
 
     TextView tvCurrentTrack;
 	TrackAdapter mTrackAdapter;
@@ -28,7 +31,32 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
         initializeViews();
     }
 
-    /**
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(0, EXIT_OPTION_MENU_ITEM, 0, "Выйти из приложения");
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	/**
+	 * Пока что реализуем выход таким вот образом
+	 * Разбиндимся от сервиса
+	 * остановим сервис
+	 * закроем активити
+	 * @param item
+	 * @return
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if(item.getItemId() == EXIT_OPTION_MENU_ITEM) {
+			pausePlay();
+			unbindMeidaService();
+			stopMediaService();
+			finish();
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	/**
      * Отображаем текущий трек
      * @param soundTrack
      */
@@ -110,13 +138,6 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
     }
 
     /**
-     * Инициализируем сик бар
-     */
-    private void initializeSeekBar(){
-        initializeSeekBarPerforming();
-    }
-
-    /**
      * Пробуем восстановить последнее место воспроизведения
      */
     private void reloadLast(){
@@ -180,7 +201,6 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
 
         reloadLast();
 
-        initializeSeekBar();
     }
 
 	@Override

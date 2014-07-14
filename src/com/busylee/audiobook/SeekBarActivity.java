@@ -20,7 +20,6 @@ public abstract class SeekBarActivity extends  BindingActivity implements SeekBa
         setSeekBarMax(getDuration());
 
         setSeekBarProgress(getCurrentPosition());
-
     }
 
     protected void setSeekBarProgress(int progress){

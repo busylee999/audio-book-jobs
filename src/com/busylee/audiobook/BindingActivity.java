@@ -109,6 +109,10 @@ public abstract class BindingActivity extends Activity implements MediaPlayerMas
 
     }
 
+	protected void stopMediaService(){
+		stopService(new Intent(this, MediaPlayerService.class));
+	}
+
     protected boolean isMediaBound(){
         return mMediaBound;
     }

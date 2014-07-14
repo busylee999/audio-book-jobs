@@ -12,16 +12,24 @@ import java.io.IOException;
  */
 public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
 
+	/** Задержка перед повторной проверкой текущей позиции и уведомления обозревателя */
     final static int SEEK_CHECK_DELAY = 500;
 
+	/** Проигрыватель */
     private MediaPlayer mMediaPlayer;
 
+	/** Позиция для воспроизведения */
     private int mSeek = -1;
 
+	/** Обозреватель действий Медиа Сервиса */
     protected MediaPlayerObserver mObserver;
 
     private Handler mHandler = new Handler();
 
+	/** Если установлен то после того как трек готов к прослушиванию начинаем воспроизведение */
+	private boolean mNeedAutoStart = false;
+
+	/** Если установлен то посылаем Runnable на повторное выполнение запроса текущего места воспроизведения*/
     private boolean mNeedRepeat = false;
 
     private Runnable mSeekCheckRunnable = new Runnable() {
@@ -60,13 +68,28 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
         mMediaPlayer.setOnErrorListener(this);
     }
 
+	/**
+	 * Подготавливаем файл к воспроизведению и устанавливаем позицию
+	 */
+	protected void setFilePath(String path, int seek) throws IOException {
+		mNeedAutoStart = false;
+		mSeek = seek;
+		playFilePath(path);
+	}
+
+	/**
+	 * Подготавливаем файл к воспроизведению и начинаем воспроизведение
+	 * @param soundTrackPath
+	 * @param seek
+	 * @throws IOException
+	 */
     protected void playFilePath(String soundTrackPath, int seek) throws IOException {
+		mNeedAutoStart = true;
+		mSeek = seek;
         playFilePath(soundTrackPath);
-        mSeek = seek;
     }
 
-	protected void playFilePath(String soundTrackPath) throws IOException {
-        mSeek = 0;
+	private void playFilePath(String soundTrackPath) throws IOException {
 		mMediaPlayer.setDataSource(soundTrackPath);
 		prepare();
 	}
@@ -104,7 +127,6 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
      * Начать проигрывать трек
      */
     public void startPlay(){
-        mMediaPlayer.seekTo(mSeek);
         mMediaPlayer.start();
         startSeekCheck();
         showForeground();
@@ -171,9 +193,16 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
      */
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
-        if(mObserver != null)
-            mObserver.onPrepared();
-        startPlay();
+		// Установим позицию воспроизведения
+		mMediaPlayer.seekTo(mSeek);
+
+		// Если есть обозреватель давайте скажем ему что мы готовы
+		if(mObserver != null)
+			mObserver.onPrepared();
+
+		// Если надо стартовать автоматически то пускай
+		if(mNeedAutoStart)
+        	startPlay();
     }
 
     /**
