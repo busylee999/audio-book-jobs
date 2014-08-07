@@ -55,6 +55,7 @@ public class SoundTrack {
         mFileUrl = cursor.getString(cursor.getColumnIndex(SoundTrackStorage.SoundTrackDBHelper.FIELD_LINK));
         mFilePath = cursor.getString(cursor.getColumnIndex(SoundTrackStorage.SoundTrackDBHelper.FIELD_FILE_PATH));
         mSeek = cursor.getInt(cursor.getColumnIndex(SoundTrackStorage.SoundTrackDBHelper.FIELD_SEEK));
+		mDownloadProgress = cursor.getInt(cursor.getColumnIndex(SoundTrackStorage.SoundTrackDBHelper.FIELD_DOWNLOAD_PROGRESS));
 
         mIsDownloaded = false;
         if( cursor.getInt(cursor.getColumnIndex(SoundTrackStorage.SoundTrackDBHelper.FIELD_DOWNLOADED)) == DOWNLOADED )
@@ -144,6 +145,7 @@ public class SoundTrack {
         contentValues.put(SoundTrackStorage.SoundTrackDBHelper.FIELD_SEEK, mSeek);
         contentValues.put(SoundTrackStorage.SoundTrackDBHelper.FIELD_DOWNLOADED, mIsDownloaded ? DOWNLOADED : NOT_DOWNLOADED);
         contentValues.put(SoundTrackStorage.SoundTrackDBHelper.FIELD_VIEWED, mIsViewed ? VIEWED : NOT_VIEWED);
+		contentValues.put(SoundTrackStorage.SoundTrackDBHelper.FIELD_DOWNLOAD_PROGRESS, mDownloadProgress);
         return contentValues;
     }
 

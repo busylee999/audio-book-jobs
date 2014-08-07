@@ -69,7 +69,7 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 	protected void onProgressUpdate(Integer... progress) {
 		mSoundTrack.setDownloadProgress(progress[0]);
 		if(mSoundTrackDownloadCompleteObserver != null)
-			mSoundTrackDownloadCompleteObserver.onSoundTrackDownloadProgress(progress[0]);
+			mSoundTrackDownloadCompleteObserver.onSoundTrackDownloadProgress(mSoundTrack);
 	}
 
 	@Override
@@ -90,17 +90,25 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
         try {
             URL url = new URL(fileUrl);
             connection = (HttpURLConnection) url.openConnection();
-            connection.connect();
 
-            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-				Log.e(LOG_TAG, "Http connection response is NOT OK");
+			if(file.exists()) {
+				Log.d(LOG_TAG, "File exist file length: " + file.length());
+				connection.setRequestProperty("Range", "bytes=" + (file.length()) + "-");
+				total += file.length();
+			}
+
+			connection.connect();
+
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK && connection.getResponseCode() != HttpURLConnection.HTTP_PARTIAL) {
+				Log.e(LOG_TAG, "Http connection response is NOT OK code: " + connection.getResponseCode());
+				Log.e(LOG_TAG, "Http response: " + connection.getResponseMessage());
 				setError(Errors.E_HTTP_RESPONSE_NOT_OK);
                 return false;
             }
 
 			Log.d(LOG_TAG, "Http connection response is ok");
 
-            int fileLength = connection.getContentLength();
+            long fileLength = connection.getContentLength() + (file.exists() ? file.length() : 0);
 
 			Log.d(LOG_TAG, "File length is" + fileLength);
 
@@ -110,7 +118,10 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 			if (fileLength < file.getParentFile().getFreeSpace()){
 				// download the file
 				input = connection.getInputStream();
-				output = new FileOutputStream(file);
+				if(file.exists())
+					output = new FileOutputStream(file, true);
+				else
+					output = new FileOutputStream(file);
 
 				byte data[] = new byte[DATA_BUFFER_LENGTH];
 				int count;
@@ -198,7 +209,7 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 	public interface SoundTrackDownloadObserver {
 		public void onSoundTrackDownloadComplete (SoundTrack soundTrack);
 		public void onSoundTrackDownloadError(int error, SoundTrack soundTrack);
-		public void onSoundTrackDownloadProgress(int progress);
+		public void onSoundTrackDownloadProgress(SoundTrack soundTrack);
 	}
 
 }

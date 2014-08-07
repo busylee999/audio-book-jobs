@@ -40,7 +40,7 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
 	/**
 	 * Пока что реализуем выход таким вот образом
 	 * Разбиндимся от сервиса
-	 * остановим сервис
+	 * остановим сервис5
 	 * закроем активити
 	 * @param item
 	 * @return

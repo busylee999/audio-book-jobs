@@ -33,6 +33,7 @@ public class DownloadService extends CustomService implements SoundTrackDownload
 	}
 
 	public void addDownloadTask(SoundTrack soundTrack){
+
 		mDownloadTaskQueue.add(new SoundTrackDownloadTask(soundTrack, this, getApplicationContext(), mSaveFileMode));
 
 		startNext();
@@ -101,9 +102,10 @@ public class DownloadService extends CustomService implements SoundTrackDownload
 	}
 
 	@Override
-	public void onSoundTrackDownloadProgress(int progress) {
+	public void onSoundTrackDownloadProgress(SoundTrack soundTrack) {
+		getSoundTrackStorage().updateTrackInfo(soundTrack);
 		if(mDownLoadServiceObserver != null)
-			mDownLoadServiceObserver.onSoundTrackDownloadProgressChange(progress);
+			mDownLoadServiceObserver.onSoundTrackDownloadProgressChange(soundTrack.getDownloadProgress());
 	}
 
     private void updateTrackInfo(SoundTrack soundTrack){
