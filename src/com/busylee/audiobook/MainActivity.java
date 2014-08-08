@@ -86,7 +86,10 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
         (findViewById(R.id.btnNext)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playNextTrack();
+				if(getSoundTrackStorage().getNextSoundTrack().isDownloaded())
+                	playNextTrack();
+				else
+					Toast.makeText(MainActivity.this, getString(R.string.toast_error_next_track_does_not_downloaded), Toast.LENGTH_SHORT).show();
             }
         });
 

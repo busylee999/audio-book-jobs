@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SteveJobs audio book</string>
+    <string name="toast_error_next_track_does_not_downloaded">Следующий трек пока что не загружен</string>
 </resources>
