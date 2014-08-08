@@ -199,6 +199,8 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
                 getCurrentTrack()
         );
 
+		initializeSeekBarPerforming();
+
         reloadLast();
 
     }
