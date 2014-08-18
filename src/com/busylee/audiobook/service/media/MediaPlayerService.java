@@ -111,7 +111,9 @@ public class MediaPlayerService extends AudioFocusMasterService {
 		if(mNeesRestoreLast) {
 			mNeesRestoreLast = false;
 			SoundTrack track = getSoundTrackStorage().getSoundTrackById(trackId);
-			setSoundTrack(track, seek);
+
+			if(track.isDownloaded())
+				setSoundTrack(track, seek);
 		}
     }
 
