@@ -127,6 +127,7 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
      * Начать проигрывать трек
      */
     public void startPlay(){
+		onStartPlayBack();
         mMediaPlayer.start();
         startSeekCheck();
         showForeground();
@@ -138,6 +139,7 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
      * Продолжить проигрывать трек
      */
     public void resumePlay() {
+		onStartPlayBack();
         mMediaPlayer.start();
         startSeekCheck();
         showForeground();
@@ -149,6 +151,7 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
      * Приостановить проигрывание трека
      */
     public void pausePlay()  {
+		onStopPlayBack();
         mMediaPlayer.pause();
         stopSeekCheck();
         showForeground();
@@ -160,6 +163,7 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
      * Остановить проигрывание трека
      */
     public void stopPlay(){
+		onStopPlayBack();
         mMediaPlayer.stop();
         stopSeekCheck();
         removeForeground();
@@ -178,6 +182,20 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
         removeForeground();
         mMediaPlayer.release();
     }
+
+	/**
+	 * Шаблонный метод
+	 */
+	protected void onStartPlayBack() {
+
+	}
+
+	/**
+	 * Шаблонный метод
+	 */
+	protected void onStopPlayBack() {
+
+	}
 
     @Override
     protected int getCurrentIcon(){
