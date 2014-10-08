@@ -8,26 +8,32 @@
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" android:layout_weight="1">
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
         <TextView
+                android:id="@+id/tvTrackName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="New Text"
-                android:id="@+id/tvTrackName"/>
+                android:text="New Text"/>
         <TextView
+                android:id="@+id/tvProgress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="New Text"
-                android:id="@+id/tvProgress"/>
+                android:text="New Text"/>
     </LinearLayout>
     <Button
+            android:id="@+id/btnLoad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="load"
-            android:id="@+id/btnLoad"/>
+            android:text="load"/>
     <Button
+            android:id="@+id/btnPlay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="play"
-            android:id="@+id/btnPlay"/>
+            android:text="play"/>
+    <Button
+            android:id="@+id/btnDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="delete"/>
 </LinearLayout>

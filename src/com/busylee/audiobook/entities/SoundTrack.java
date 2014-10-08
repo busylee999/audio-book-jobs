@@ -79,6 +79,11 @@ public class SoundTrack {
 		mIsDownloaded = true;
 	}
 
+	public void onFileRemoved() {
+		mIsDownloaded = false;
+		mDownloadProgress = 0;
+	}
+
 	public boolean isDownloaded(){
 		return mIsDownloaded;
 	}

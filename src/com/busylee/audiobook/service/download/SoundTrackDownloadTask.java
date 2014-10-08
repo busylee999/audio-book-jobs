@@ -26,6 +26,7 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 
 	static final String LOG_TAG = "SoundTrackDownloadTask";
 	static final int DATA_BUFFER_LENGTH = 4096;
+	static final int PROGRESS_SENDING_COUNT = 100000;
 
 	private SoundTrackDownloadObserver mSoundTrackDownloadCompleteObserver;
 	private SoundTrack mSoundTrack;
@@ -109,7 +110,7 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 			Log.d(LOG_TAG, "Http connection response is ok");
 
             long fileLength = connection.getContentLength() + (file.exists() ? file.length() : 0);
-
+			long byteCount = 0;
 			Log.d(LOG_TAG, "File length is" + fileLength);
 
 			/* проверяем достаточно ли свободно места для
@@ -132,9 +133,12 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 						return false;
 					}
 					total += count;
+					byteCount += count;
 
-					if (fileLength > 0)
+					if (fileLength > 0 && byteCount > PROGRESS_SENDING_COUNT) {
+						byteCount = 0;
 						publishProgress((int) (total * 100 / fileLength));
+					}
 
 					output.write(data, 0, count);
 				}

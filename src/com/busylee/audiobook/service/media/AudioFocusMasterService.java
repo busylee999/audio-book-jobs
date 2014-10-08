@@ -11,6 +11,7 @@ import android.media.AudioManager;
  */
 public class AudioFocusMasterService extends MediaPlayerMaster {
 
+	private boolean mRegister = false;
 	NoisyAudioStreamReceiver mNoisyAudioStreamReceiver = new NoisyAudioStreamReceiver();
 
 	private class NoisyAudioStreamReceiver extends BroadcastReceiver {
@@ -27,12 +28,19 @@ public class AudioFocusMasterService extends MediaPlayerMaster {
 	@Override
 	protected void onStartPlayBack() {
 		super.onStartPlayBack();
-		registerReceiver(mNoisyAudioStreamReceiver, intentFilter);
+
+		if(!mRegister) {
+			registerReceiver(mNoisyAudioStreamReceiver, intentFilter);
+			mRegister = true;
+		}
 	}
 
 	@Override
 	protected void onStopPlayBack() {
 		super.onStopPlayBack();
-		unregisterReceiver(mNoisyAudioStreamReceiver);
+		if(mRegister) {
+			unregisterReceiver(mNoisyAudioStreamReceiver);
+			mRegister = false;
+		}
 	}
 }

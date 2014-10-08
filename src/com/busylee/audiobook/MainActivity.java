@@ -11,6 +11,8 @@ import android.widget.Toast;
 import com.busylee.audiobook.base.SoundTrackStorage;
 import com.busylee.audiobook.entities.SoundTrack;
 
+import java.io.File;
+
 public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundTrackClickListener {
 
     static final String TAG = "MainActivity";
@@ -198,9 +200,7 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
 
     @Override
     protected void onMediaServiceBind() {
-        showCurrentTrack(
-                getCurrentTrack()
-        );
+        showCurrentTrack( getCurrentTrack() );
 
 		initializeSeekBarPerforming();
 
@@ -241,5 +241,20 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
 	public void onDownloadClick(SoundTrack soundTrack) {
 		if(isDownloadBound() && soundTrack != null)
 			addDownloadTask(soundTrack);
+	}
+
+	@Override
+	public void onDeleteClick(SoundTrack soundTrack) {
+		File file = new File(soundTrack.getFilePath());
+
+		if(file.exists())
+			if(file.delete()) {
+				Toast.makeText(this, "Sound track file was removed", Toast.LENGTH_SHORT).show();
+				soundTrack.onFileRemoved();
+				getSoundTrackStorage().updateTrackInfo(soundTrack);
+				mTrackAdapter.notifyDataSetChanged();
+			}
+
+
 	}
 }

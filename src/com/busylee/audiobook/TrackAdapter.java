@@ -77,6 +77,15 @@ public class TrackAdapter extends BaseAdapter {
 			}
 		});
 
+		(view.findViewById(R.id.btnDelete)).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				if(mSoundTrackClickListener != null)
+					mSoundTrackClickListener.onDeleteClick(soundTrack);
+			}
+		});
+
+		(view.findViewById(R.id.btnDelete)).setVisibility(soundTrack.isDownloaded() ? View.VISIBLE : View.GONE);
         (view.findViewById(R.id.btnLoad)).setVisibility(soundTrack.isDownloaded() ? View.GONE : View.VISIBLE);
 
         return view;
@@ -89,5 +98,6 @@ public class TrackAdapter extends BaseAdapter {
 	public interface SoundTrackClickListener {
 		public void onPlayClick(SoundTrack soundTrack);
 		public void onDownloadClick(SoundTrack soundTrack);
+		public void onDeleteClick(SoundTrack soundTrack);
 	}
 }
