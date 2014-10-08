@@ -67,6 +67,14 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
     }
 
 	@Override
+	protected void onPreExecute() {
+		super.onPreExecute();
+		mSoundTrack.setIsDownloading(true);
+		if(mSoundTrackDownloadCompleteObserver != null)
+			mSoundTrackDownloadCompleteObserver.onStartDownloadTrack(mSoundTrack);
+	}
+
+	@Override
 	protected void onProgressUpdate(Integer... progress) {
 		mSoundTrack.setDownloadProgress(progress[0]);
 		if(mSoundTrackDownloadCompleteObserver != null)
@@ -75,9 +83,10 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 
 	@Override
 	protected void onPostExecute(SoundTrack soundTrack) {
+		mSoundTrack.setIsDownloading(false);
 		if(mSoundTrackDownloadCompleteObserver != null)
 			if(soundTrack != null)
-				mSoundTrackDownloadCompleteObserver.onSoundTrackDownloadComplete(soundTrack);
+				mSoundTrackDownloadCompleteObserver.onSoundTrackDownloadComplete(mSoundTrack);
 			else
 				mSoundTrackDownloadCompleteObserver.onSoundTrackDownloadError(mError, mSoundTrack);
 
@@ -211,6 +220,7 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 	}
 
 	public interface SoundTrackDownloadObserver {
+		public void onStartDownloadTrack(SoundTrack soundTrack);
 		public void onSoundTrackDownloadComplete (SoundTrack soundTrack);
 		public void onSoundTrackDownloadError(int error, SoundTrack soundTrack);
 		public void onSoundTrackDownloadProgress(SoundTrack soundTrack);

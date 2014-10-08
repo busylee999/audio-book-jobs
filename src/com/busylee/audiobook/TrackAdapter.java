@@ -54,7 +54,7 @@ public class TrackAdapter extends BaseAdapter {
 				soundTrack.getFileName()
 		);
 
-        if( !soundTrack.isDownloaded()  )
+        if( (soundTrack.getDownloadProgress() > 0 || soundTrack.isDownloading()) && !soundTrack.isDownloaded()  )
             ((TextView) view.findViewById(R.id.tvProgress)).setText(
                     String.valueOf(soundTrack.getDownloadProgress()) + "/100"
             );
@@ -86,8 +86,8 @@ public class TrackAdapter extends BaseAdapter {
 		});
 
 		(view.findViewById(R.id.btnDelete)).setVisibility(soundTrack.isDownloaded() ? View.VISIBLE : View.GONE);
-        (view.findViewById(R.id.btnLoad)).setVisibility(soundTrack.isDownloaded() ? View.GONE : View.VISIBLE);
-
+        (view.findViewById(R.id.btnLoad)).setVisibility(soundTrack.isDownloaded() && !soundTrack.isDownloading() ? View.GONE : View.VISIBLE);
+		(view.findViewById(R.id.tvDownloading)).setVisibility(soundTrack.isDownloading() ? View.VISIBLE : View.GONE);
         return view;
     }
 

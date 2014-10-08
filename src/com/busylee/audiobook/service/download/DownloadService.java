@@ -1,5 +1,6 @@
 package com.busylee.audiobook.service.download;
 
+import android.app.Notification;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Binder;
@@ -87,11 +88,27 @@ public class DownloadService extends CustomService implements SoundTrackDownload
 	}
 
 	@Override
+	public void onStartDownloadTrack(SoundTrack soundTrack) {
+		updateTrackInfo(soundTrack);
+	}
+
+	@Override
 	public void onSoundTrackDownloadComplete(SoundTrack soundTrack) {
         updateTrackInfo(soundTrack);
 		startNext();
-		if(mDownLoadServiceObserver != null)
+		if(mDownLoadServiceObserver != null) {
 			mDownLoadServiceObserver.onSoundTrackDownloadSuccess(soundTrack);
+		} else {
+
+		}
+	}
+
+	private Notification generateTrackDownloadSuccessNotification(SoundTrack soundTrack){
+		Notification.Builder builder= new Notification.Builder(this);
+
+
+
+		return builder.getNotification();
 	}
 
 	@Override

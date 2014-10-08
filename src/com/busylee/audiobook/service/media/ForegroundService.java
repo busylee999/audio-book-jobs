@@ -3,6 +3,7 @@ package com.busylee.audiobook.service.media;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import com.busylee.audiobook.MainActivity;
 import com.busylee.audiobook.R;
 import com.busylee.audiobook.service.CustomService;
@@ -26,8 +27,10 @@ public class ForegroundService extends CustomService {
     }
 
     private Notification getCurrentNotification(){
+		Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+
         PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0,
-                new Intent(getApplicationContext(), MainActivity.class),
+        		intent ,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         return  new Notification.Builder(getApplicationContext())
@@ -36,7 +39,8 @@ public class ForegroundService extends CustomService {
                 .setContentTitle(getNotificationTitle())
                 .setContentText(getNotificationText())
                 .setSmallIcon(getCurrentIcon())
-                .build();
+				.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.jobs_face))
+                .getNotification();
     }
 
     @Override

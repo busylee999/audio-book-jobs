@@ -34,6 +34,9 @@ public class SoundTrack {
     /** Прогресс загрузки */
 	private int mDownloadProgress;
 
+	/** Загружается ли сейчас трек*/
+	private boolean mIsDownloading;
+
     /** Был ли трек прослушан*/
     private boolean mIsViewed;
 
@@ -161,4 +164,12 @@ public class SoundTrack {
 
         return ((SoundTrack) object).getTrackId() == this.getTrackId();
     }
+
+	public boolean isDownloading() {
+		return mIsDownloading;
+	}
+
+	public void setIsDownloading(boolean isDownloading) {
+		mIsDownloading = isDownloading;
+	}
 }
