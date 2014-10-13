@@ -19,7 +19,6 @@ import java.util.Queue;
 public class DownloadService extends CustomService implements SoundTrackDownloadTask.SoundTrackDownloadObserver, SharedPreferences.OnSharedPreferenceChangeListener {
 
 	public final static String PREF_KEY_SAVE_FILE_MODE = "SAVE_FILE_MODE";
-
 	boolean mNeedToStart = true;
 
 	DownLoadServiceObserver mDownLoadServiceObserver;
@@ -90,6 +89,8 @@ public class DownloadService extends CustomService implements SoundTrackDownload
 	@Override
 	public void onStartDownloadTrack(SoundTrack soundTrack) {
 		updateTrackInfo(soundTrack);
+		if(mDownLoadServiceObserver != null)
+			mDownLoadServiceObserver.onSoundTrackDownloadStart(soundTrack);
 	}
 
 	@Override
@@ -99,7 +100,7 @@ public class DownloadService extends CustomService implements SoundTrackDownload
 		if(mDownLoadServiceObserver != null) {
 			mDownLoadServiceObserver.onSoundTrackDownloadSuccess(soundTrack);
 		} else {
-
+			//todo показать уведомление
 		}
 	}
 
@@ -161,5 +162,6 @@ public class DownloadService extends CustomService implements SoundTrackDownload
 		public void onSoundTrackDownloadError(int error, SoundTrack soundTrack);
 		public void onSoundTrackDownloadSuccess(SoundTrack soundTrack);
 		public void onSoundTrackDownloadProgressChange(int progress);
+		public void onSoundTrackDownloadStart(SoundTrack soundTrack);
 	}
 }

@@ -231,6 +231,11 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
 	}
 
 	@Override
+	public void onSoundTrackDownloadStart(SoundTrack soundTrack) {
+		mTrackAdapter.notifyDataSetChanged();
+	}
+
+	@Override
 	public void onPlayClick(SoundTrack soundTrack) {
 		if(isMediaBound() && soundTrack != null && soundTrack.isDownloaded())
 			playTrackById(soundTrack.getTrackId());
@@ -254,7 +259,5 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
 				getSoundTrackStorage().updateTrackInfo(soundTrack);
 				mTrackAdapter.notifyDataSetChanged();
 			}
-
-
 	}
 }
