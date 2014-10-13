@@ -8,18 +8,15 @@ import android.widget.SeekBar;
 public abstract class SeekBarActivity extends  BindingActivity implements SeekBar.OnSeekBarChangeListener {
 
     @Override
-    public void onPrepared(){
+    public void onPrepared(int seek){
         if(isMediaBound())
-            initializeSeekBarPerforming();
+            initializeSeekBarPerforming(seek);
     }
 
-    /**
-     * Стартует обработку SeekBar
-     */
-    protected void initializeSeekBarPerforming(){
+    protected void initializeSeekBarPerforming(int seek){
         setSeekBarMax(getDuration());
 
-        setSeekBarProgress(getCurrentPosition());
+        setSeekBarProgress(seek);
     }
 
     protected void setSeekBarProgress(int progress){

@@ -202,8 +202,6 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
     protected void onMediaServiceBind() {
         showCurrentTrack( getCurrentTrack() );
 
-		initializeSeekBarPerforming();
-
         reloadLast();
 
     }

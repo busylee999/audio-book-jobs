@@ -216,7 +216,7 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
 
 		// Если есть обозреватель давайте скажем ему что мы готовы
 		if(mObserver != null)
-			mObserver.onPrepared();
+			mObserver.onPrepared(mSeek);
 
 		// Если надо стартовать автоматически то пускай
 		if(mNeedAutoStart)
@@ -276,7 +276,7 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
         public void onPlayPause(int seek);
         public void onPlayStop();
 
-        public void onPrepared();
+        public void onPrepared(int seek);
 
         public void onSoundTrackChange(SoundTrack soundTrack);
 
