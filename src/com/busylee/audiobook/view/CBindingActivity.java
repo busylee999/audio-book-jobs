@@ -1,6 +1,5 @@
 package com.busylee.audiobook.view;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +14,7 @@ import com.busylee.audiobook.service.media.CMediaPlayerService;
 /**
  * Created by busylee on 14.04.14.
  */
-public abstract class CBindingActivity extends Activity implements CMediaPlayerMaster.MediaPlayerObserver, CDownloadService.DownLoadServiceObserver {
+public abstract class CBindingActivity extends CBaseActivity implements CMediaPlayerMaster.MediaPlayerObserver, CDownloadService.DownLoadServiceObserver {
 
     CMediaPlayerService mMediaService;
 
@@ -25,7 +24,7 @@ public abstract class CBindingActivity extends Activity implements CMediaPlayerM
     boolean mMediaBound = false;
 	boolean mDownloadBound = false;
 
-    protected void seekTo(int seek){
+    public void seekTo(int seek){
         mMediaService.seekTo(seek);
     }
 
@@ -33,7 +32,7 @@ public abstract class CBindingActivity extends Activity implements CMediaPlayerM
      * Получить текущую позицию для текущего трека
      * @return
      */
-    protected int getCurrentPosition(){
+    public int getCurrentPosition(){
         return mMediaService.getCurrentPosition();
     }
 
@@ -41,14 +40,14 @@ public abstract class CBindingActivity extends Activity implements CMediaPlayerM
      * Получить продолжительность текущего трека
      * @return
      */
-    protected int getDuration(){
+    public int getDuration(){
         return mMediaService.getDuration();
     }
 
     /**
      * Начать проигрывание следующего трека
      */
-    protected void playNextTrack(){
+    public void playNextTrack(){
         mMediaService.playNext();
     }
 
@@ -63,18 +62,18 @@ public abstract class CBindingActivity extends Activity implements CMediaPlayerM
     /**
      * Пауза
      */
-    protected void pausePlay(){
+    public void pausePlay(){
         mMediaService.pausePlay();
     }
 
     /**
      * Возобновить проигрывание
      */
-    protected void resumePlay(){
+    public void resumePlay(){
         mMediaService.resumePlay();
     }
 
-	protected boolean isPlaying() { return mMediaBound && mMediaService.isPlaying();}
+	public boolean isPlaying() { return mMediaBound && mMediaService.isPlaying();}
 
     protected CSoundTrack getCurrentTrack(){
         return mMediaService.getCurrentSoundTrack();

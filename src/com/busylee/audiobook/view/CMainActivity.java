@@ -1,27 +1,26 @@
 package com.busylee.audiobook.view;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListView;
-import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
-import com.busylee.audiobook.*;
-import com.busylee.audiobook.base.CSoundTrackStorage;
+import com.busylee.audiobook.CLocator;
+import com.busylee.audiobook.CTrackAdapter;
+import com.busylee.audiobook.R;
 import com.busylee.audiobook.entities.CSoundTrack;
+import com.busylee.audiobook.view.player.CPlayerFragment;
+import com.busylee.audiobook.view.player.IPlayerFragmentObserver;
 
 import java.io.File;
 
-public class CMainActivity extends CSeekBarActivity implements CTrackAdapter.SoundTrackClickListener {
+public class CMainActivity extends CBindingActivity implements CTrackAdapter.SoundTrackClickListener, IPlayerFragmentObserver {
 
     static final String TAG = "MainActivity";
 	static final int EXIT_OPTION_MENU_ITEM = 0;
 
-    TextView tvCurrentTrack;
-	CTrackAdapter mTrackAdapter;
-    SeekBar mSeekBar;
+	private CTrackAdapter mTrackAdapter;
 
     /**
      * Called when the activity is first created.
@@ -33,13 +32,6 @@ public class CMainActivity extends CSeekBarActivity implements CTrackAdapter.Sou
 
         initializeViews();
     }
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-
-		updateViews();
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -66,89 +58,28 @@ public class CMainActivity extends CSeekBarActivity implements CTrackAdapter.Sou
 		return super.onOptionsItemSelected(item);
 	}
 
-	/**
-     * Отображаем текущий трек
-     * @param soundTrack
-     */
-    protected void showCurrentTrack(final CSoundTrack soundTrack){
-        tvCurrentTrack.setText(soundTrack.getFileName());
-    }
-
     /**
      * Инициализируем вьюшки
      */
     private void initializeViews(){
+		ListView lvTrackList = (ListView) findViewById(R.id.lvTrackList);
 
-        (findViewById(R.id.btnPause)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pausePlay();
-            }
-        });
-
-        (findViewById(R.id.btnResume)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resumePlay();
-            }
-        });
-
-        (findViewById(R.id.btnNext)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-				if(getSoundTrackStorage().getNextSoundTrack().isDownloaded())
-                	playNextTrack();
-				else
-					Toast.makeText(CMainActivity.this, getString(R.string.toast_error_next_track_does_not_downloaded), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        tvCurrentTrack = (TextView) findViewById(R.id.tvCurrentTrack);
-
-        mSeekBar = (SeekBar) findViewById(R.id.sbCurrentTrackSeekBar);
-        mSeekBar.setOnSeekBarChangeListener(this);
-
-        initializeTrackList();
-
+		lvTrackList.setAdapter(getTrackAdapter());
     }
 
-    /**
-     * Получаем хранилище треков
-     * @return
-     */
-    private CSoundTrackStorage getSoundTrackStorage(){
-        return getCustomApplication().getSoundTrackStorage();
-    }
+	public void playNextTrack() {
+		if (getSoundTrackStorage().getNextSoundTrack().isDownloaded())
+			super.playNextTrack();
+		else
+			Toast.makeText(this, getString(R.string.toast_error_next_track_does_not_downloaded), Toast.LENGTH_SHORT).show();
+	}
 
-    /**
-     * Получаем наше кастомное приложение
-     * @return
-     */
-    private CAudioBookApplication getCustomApplication() {
-        return (CAudioBookApplication) getApplication();
-    }
-
-    /**
-     * Получаем адаптер треков
-     * @return
-     */
 	private CTrackAdapter getTrackAdapter(){
 		if (mTrackAdapter == null)
 			mTrackAdapter = new CTrackAdapter(this, getSoundTrackStorage() , this);
 
 		return mTrackAdapter;
 	}
-
-    /**
-     * Инициализируем список треков на экране
-     */
-    private void initializeTrackList(){
-         ListView lvTrackList = (ListView) findViewById(R.id.lvTrackList);
-
-        lvTrackList.setAdapter(
-			getTrackAdapter()
-        );
-    }
 
     /**
      * Пробуем восстановить последнее место воспроизведения
@@ -166,30 +97,38 @@ public class CMainActivity extends CSeekBarActivity implements CTrackAdapter.Sou
         reloadLast(trackId, seek);
     }
 
-    private CSettings getSettings(){
-        return getCustomApplication().getSettings();
-    }
+	/**
+	 * Сохраним последний трек и место воспроизведения
+	 * @param seek
+	 */
+	private void storeLastTrackInfo(int seek) {
+		CSoundTrack track = getCurrentTrack();
+		if (track != null) {
+			getSettings().storeLastTrackId(track.getTrackId());
+			getSettings().storeLastSeek(seek);
+		} else
+			getSettings().resetLast();
+	}
 
-    @Override
-    protected SeekBar getSeekBar() {
-        return mSeekBar;
-    }
+	private CPlayerFragment getPlayerFragment() {
+		Fragment fragment = getFragmentManager().findFragmentById(R.id.fPlayerFragment);
+		return (CPlayerFragment) fragment;
+	}
+
+	@Override
+	public void onCurrentTrackSeekChange(int seconds) {
+		getPlayerFragment().onCurrentTrackSeekChange(seconds);
+	}
 
     @Override
     public void onPlayResume() {
-		updateViews();
+		getPlayerFragment().onPlayResume();
     }
 
     @Override
     public void onPlayPause(int seek) {
-        CSoundTrack track = getCurrentTrack();
-        if (track != null) {
-            getSettings().storeLastTrackId(track.getTrackId());
-            getSettings().storeLastSeek(seek);
-        } else
-            getSettings().resetLast();
-
-		updateViews();
+		storeLastTrackInfo(seek);
+		getPlayerFragment().onPlayPause();
     }
 
     @Override
@@ -197,9 +136,14 @@ public class CMainActivity extends CSeekBarActivity implements CTrackAdapter.Sou
 
     }
 
-    @Override
+	@Override
+	public void onPrepared(int seek) {
+		getPlayerFragment().onPrepared(seek);
+	}
+
+	@Override
     public void onSoundTrackChange(CSoundTrack soundTrack) {
-        showCurrentTrack(soundTrack);
+		getPlayerFragment().onSoundTrackChange(soundTrack);
     }
 
     @Override
@@ -209,26 +153,10 @@ public class CMainActivity extends CSeekBarActivity implements CTrackAdapter.Sou
 
     @Override
     protected void onMediaServiceBind() {
-		super.onMediaServiceBind();
-        showCurrentTrack(getCurrentTrack());
-
-		updateViews();
+        getPlayerFragment().onMediaServiceBind();
 
         reloadLast();
     }
-
-	//todo stub
-	protected void updateViews() {
-		if(isPlaying()) {
-			(findViewById(R.id.btnPause)).setVisibility(View.VISIBLE);
-
-			(findViewById(R.id.btnResume)).setVisibility(View.GONE);
-		} else {
-			(findViewById(R.id.btnPause)).setVisibility(View.GONE);
-
-			(findViewById(R.id.btnResume)).setVisibility(View.VISIBLE);
-		}
-	}
 
 	@Override
 	protected void onDownloadServiceBind() {
