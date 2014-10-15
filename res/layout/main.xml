@@ -4,38 +4,58 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
         >
-    <SeekBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/sbCurrentTrackSeekBar"
-            android:indeterminate="false"
-            android:progress="0"
-            android:max="100"/>
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Text"
-            android:id="@+id/tvCurrentTrack"/>
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <Button
-                android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@drawable/player_bg">
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Pause"
-                android:id="@+id/btnPause"/>
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Resume"
-                android:id="@+id/btnResume"/>
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Next"
-                android:id="@+id/btnNext"/>
-    </LinearLayout>
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_alignParentTop="true">
+            <Button
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/btnPrev"
+                    android:background="@drawable/prev"/>
+            <Button
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/btnPause"
+                    android:background="@drawable/pause_player"/>
+            <Button
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/btnResume"
+                    android:background="@drawable/play_player"/>
+            <Button
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/btnNext"
+                    android:background="@drawable/next"/>
+        </LinearLayout>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="New Text"
+                    android:id="@+id/tvCurrentTrack"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_above="@+id/sbCurrentTrackSeekBar"/>
+            <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/sbCurrentTrackSeekBar"
+                    android:indeterminate="false"
+                    android:progress="0"
+                    android:max="100"
+                    android:layout_marginRight="120dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_alignParentBottom="true"/>
+        </RelativeLayout>
     <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

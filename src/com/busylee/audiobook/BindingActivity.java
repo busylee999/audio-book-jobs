@@ -74,6 +74,8 @@ public abstract class BindingActivity extends Activity implements MediaPlayerMas
         mMediaService.resumePlay();
     }
 
+	protected boolean isPlaying() { return mMediaBound && mMediaService.isPlaying();}
+
     protected SoundTrack getCurrentTrack(){
         return mMediaService.getCurrentSoundTrack();
     }
@@ -98,8 +100,8 @@ public abstract class BindingActivity extends Activity implements MediaPlayerMas
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
 
         Intent mediaPlayerServiceIntent = new Intent(this, MediaPlayerService.class);
         bindService(mediaPlayerServiceIntent, mMediaConnection, Context.BIND_AUTO_CREATE);
@@ -117,7 +119,7 @@ public abstract class BindingActivity extends Activity implements MediaPlayerMas
         return mMediaBound;
     }
 
-    protected void unbindMeidaService(){
+    protected void unbindMediaService(){
         if (mMediaBound) {
             mMediaService.removeObserver();
             unbindService(mMediaConnection);
@@ -139,7 +141,7 @@ public abstract class BindingActivity extends Activity implements MediaPlayerMas
 
     @Override
     protected void onStop() {
-        unbindMeidaService();
+        unbindMediaService();
 		unbindDownloadService();
         super.onStop();
     }

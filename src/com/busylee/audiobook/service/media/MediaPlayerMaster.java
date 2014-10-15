@@ -264,6 +264,14 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
         }
     }
 
+	public boolean isPlaying() {
+		if(mMediaPlayer != null) {
+			return mMediaPlayer.isPlaying();
+		}
+
+		return false;
+	}
+
     /**
      * Останавливаем проверку seek
      */

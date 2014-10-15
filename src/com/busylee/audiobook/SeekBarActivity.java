@@ -13,6 +13,10 @@ public abstract class SeekBarActivity extends  BindingActivity implements SeekBa
             initializeSeekBarPerforming(seek);
     }
 
+	protected void onMediaServiceBind() {
+		initializeSeekBarPerforming(getCurrentPosition());
+	}
+
     protected void initializeSeekBarPerforming(int seek){
         setSeekBarMax(getDuration());
 

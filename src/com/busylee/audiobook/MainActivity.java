@@ -34,6 +34,13 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
     }
 
 	@Override
+	protected void onResume() {
+		super.onResume();
+
+		updateViews();
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add(0, EXIT_OPTION_MENU_ITEM, 0, "Выйти из приложения");
 		return super.onCreateOptionsMenu(menu);
@@ -51,7 +58,7 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if(item.getItemId() == EXIT_OPTION_MENU_ITEM) {
 			pausePlay();
-			unbindMeidaService();
+			unbindMediaService();
 			stopMediaService();
 			finish();
 		}
@@ -150,13 +157,12 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
         int trackId = getSettings().getLastTrackId();
 
         if(trackId == -1 || seek == -1){
-            Locator.getLogger().writeLog(TAG, "Not enougth data to " +
+            Locator.getLogger().writeLog(TAG, "Not enough data to " +
                     "reload last track. trackId = " + trackId + " seek = " + seek);
             return;
         }
 
         reloadLast(trackId, seek);
-
     }
 
     private Settings getSettings(){
@@ -170,7 +176,7 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
 
     @Override
     public void onPlayResume() {
-
+		updateViews();
     }
 
     @Override
@@ -181,6 +187,8 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
             getSettings().storeLastSeek(seek);
         } else
             getSettings().resetLast();
+
+		updateViews();
     }
 
     @Override
@@ -200,11 +208,26 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
 
     @Override
     protected void onMediaServiceBind() {
+		super.onMediaServiceBind();
         showCurrentTrack( getCurrentTrack() );
 
-        reloadLast();
+		updateViews();
 
+        reloadLast();
     }
+
+	//todo stub
+	protected void updateViews() {
+		if(isPlaying()) {
+			(findViewById(R.id.btnPause)).setVisibility(View.VISIBLE);
+
+			(findViewById(R.id.btnResume)).setVisibility(View.GONE);
+		} else {
+			(findViewById(R.id.btnPause)).setVisibility(View.GONE);
+
+			(findViewById(R.id.btnResume)).setVisibility(View.VISIBLE);
+		}
+	}
 
 	@Override
 	protected void onDownloadServiceBind() {
