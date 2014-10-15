@@ -1,14 +1,14 @@
 package com.busylee.audiobook;
 
 import android.app.Application;
-import com.busylee.audiobook.base.SoundTrackStorage;
+import com.busylee.audiobook.base.CSoundTrackStorage;
 
 /**
  * Created by busylee on 4/24/14.
  */
-public class AudioBookApplication extends Application {
+public class CAudioBookApplication extends Application {
 
-    private SoundTrackStorage mSoundTrackStorage;
+    private CSoundTrackStorage mSoundTrackStorage;
 
     @Override
     public void onCreate()
@@ -19,18 +19,18 @@ public class AudioBookApplication extends Application {
 
     protected void initSingletons()
     {
-        mSoundTrackStorage = SoundTrackStorage.getInstance(this);
+        mSoundTrackStorage = CSoundTrackStorage.getInstance(this);
     }
 
     /**
      * Получаем настройки для приложения
      * @return
      */
-    public Settings getSettings(){
-        return Settings.getInstance(this);
+    public CSettings getSettings(){
+        return CSettings.getInstance(this);
     }
 
-    public synchronized SoundTrackStorage getSoundTrackStorage(){
+    public synchronized CSoundTrackStorage getSoundTrackStorage(){
         return mSoundTrackStorage;
     }
 }

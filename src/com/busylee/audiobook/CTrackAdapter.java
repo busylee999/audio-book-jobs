@@ -6,21 +6,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import com.busylee.audiobook.base.SoundTrackStorage;
-import com.busylee.audiobook.entities.SoundTrack;
+import com.busylee.audiobook.base.CSoundTrackStorage;
+import com.busylee.audiobook.entities.CSoundTrack;
 
 import java.util.List;
 
 /**
  * Created by busylee on 16.04.14.
  */
-public class TrackAdapter extends BaseAdapter {
+public class CTrackAdapter extends BaseAdapter {
 
-    private List<SoundTrack> mSoundTrackList;
+    private List<CSoundTrack> mSoundTrackList;
     private LayoutInflater mLayoutInflater;
 	private SoundTrackClickListener mSoundTrackClickListener;
 
-    public TrackAdapter(Context context, SoundTrackStorage soundTrackStorage, SoundTrackClickListener soundTrackClickListener){
+    public CTrackAdapter(Context context, CSoundTrackStorage soundTrackStorage, SoundTrackClickListener soundTrackClickListener){
         mSoundTrackList = soundTrackStorage.getSoundTrackList();
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mSoundTrackClickListener = soundTrackClickListener;
@@ -48,7 +48,7 @@ public class TrackAdapter extends BaseAdapter {
             view = mLayoutInflater.inflate(R.layout.track_item, viewGroup, false);
         }
 
-        final SoundTrack soundTrack = getSoundTrack(i);
+        final CSoundTrack soundTrack = getSoundTrack(i);
 
         ((TextView) view.findViewById(R.id.tvTrackName)).setText(
 				soundTrack.getFileName()
@@ -93,13 +93,13 @@ public class TrackAdapter extends BaseAdapter {
         return view;
     }
 
-    public SoundTrack getSoundTrack(int i){
-        return (SoundTrack) getItem(i);
+    public CSoundTrack getSoundTrack(int i){
+        return (CSoundTrack) getItem(i);
     }
 
 	public interface SoundTrackClickListener {
-		public void onPlayClick(SoundTrack soundTrack);
-		public void onDownloadClick(SoundTrack soundTrack);
-		public void onDeleteClick(SoundTrack soundTrack);
+		public void onPlayClick(CSoundTrack soundTrack);
+		public void onDownloadClick(CSoundTrack soundTrack);
+		public void onDeleteClick(CSoundTrack soundTrack);
 	}
 }

@@ -5,7 +5,7 @@ import android.util.Log;
 /**
  * Created by busylee on 7/6/14.
  */
-public class Logger {
+public class CLogger {
 
     /**
      * Пишем простое сообщение в лог

@@ -1,4 +1,4 @@
-package com.busylee.audiobook;
+package com.busylee.audiobook.view;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,18 +8,19 @@ import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.busylee.audiobook.base.SoundTrackStorage;
-import com.busylee.audiobook.entities.SoundTrack;
+import com.busylee.audiobook.*;
+import com.busylee.audiobook.base.CSoundTrackStorage;
+import com.busylee.audiobook.entities.CSoundTrack;
 
 import java.io.File;
 
-public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundTrackClickListener {
+public class CMainActivity extends CSeekBarActivity implements CTrackAdapter.SoundTrackClickListener {
 
     static final String TAG = "MainActivity";
 	static final int EXIT_OPTION_MENU_ITEM = 0;
 
     TextView tvCurrentTrack;
-	TrackAdapter mTrackAdapter;
+	CTrackAdapter mTrackAdapter;
     SeekBar mSeekBar;
 
     /**
@@ -69,7 +70,7 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
      * Отображаем текущий трек
      * @param soundTrack
      */
-    protected void showCurrentTrack(final SoundTrack soundTrack){
+    protected void showCurrentTrack(final CSoundTrack soundTrack){
         tvCurrentTrack.setText(soundTrack.getFileName());
     }
 
@@ -98,7 +99,7 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
 				if(getSoundTrackStorage().getNextSoundTrack().isDownloaded())
                 	playNextTrack();
 				else
-					Toast.makeText(MainActivity.this, getString(R.string.toast_error_next_track_does_not_downloaded), Toast.LENGTH_SHORT).show();
+					Toast.makeText(CMainActivity.this, getString(R.string.toast_error_next_track_does_not_downloaded), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -115,7 +116,7 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
      * Получаем хранилище треков
      * @return
      */
-    private SoundTrackStorage getSoundTrackStorage(){
+    private CSoundTrackStorage getSoundTrackStorage(){
         return getCustomApplication().getSoundTrackStorage();
     }
 
@@ -123,17 +124,17 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
      * Получаем наше кастомное приложение
      * @return
      */
-    private AudioBookApplication getCustomApplication() {
-        return (AudioBookApplication) getApplication();
+    private CAudioBookApplication getCustomApplication() {
+        return (CAudioBookApplication) getApplication();
     }
 
     /**
      * Получаем адаптер треков
      * @return
      */
-	private TrackAdapter getTrackAdapter(){
+	private CTrackAdapter getTrackAdapter(){
 		if (mTrackAdapter == null)
-			mTrackAdapter = new TrackAdapter(this, getSoundTrackStorage() , this);
+			mTrackAdapter = new CTrackAdapter(this, getSoundTrackStorage() , this);
 
 		return mTrackAdapter;
 	}
@@ -157,7 +158,7 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
         int trackId = getSettings().getLastTrackId();
 
         if(trackId == -1 || seek == -1){
-            Locator.getLogger().writeLog(TAG, "Not enough data to " +
+            CLocator.getLogger().writeLog(TAG, "Not enough data to " +
                     "reload last track. trackId = " + trackId + " seek = " + seek);
             return;
         }
@@ -165,7 +166,7 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
         reloadLast(trackId, seek);
     }
 
-    private Settings getSettings(){
+    private CSettings getSettings(){
         return getCustomApplication().getSettings();
     }
 
@@ -181,7 +182,7 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
 
     @Override
     public void onPlayPause(int seek) {
-        SoundTrack track = getCurrentTrack();
+        CSoundTrack track = getCurrentTrack();
         if (track != null) {
             getSettings().storeLastTrackId(track.getTrackId());
             getSettings().storeLastSeek(seek);
@@ -197,7 +198,7 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
     }
 
     @Override
-    public void onSoundTrackChange(SoundTrack soundTrack) {
+    public void onSoundTrackChange(CSoundTrack soundTrack) {
         showCurrentTrack(soundTrack);
     }
 
@@ -209,7 +210,7 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
     @Override
     protected void onMediaServiceBind() {
 		super.onMediaServiceBind();
-        showCurrentTrack( getCurrentTrack() );
+        showCurrentTrack(getCurrentTrack());
 
 		updateViews();
 
@@ -235,13 +236,13 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
 	}
 
 	@Override
-	public void onSoundTrackDownloadError(int error, SoundTrack soundTrack) {
+	public void onSoundTrackDownloadError(int error, CSoundTrack soundTrack) {
 		Toast.makeText(this, "Track downloading error(" + error +"). Track id = " + soundTrack.getTrackId(), Toast.LENGTH_LONG).show();
 		mTrackAdapter.notifyDataSetChanged();
 	}
 
 	@Override
-	public void onSoundTrackDownloadSuccess(SoundTrack soundTrack) {
+	public void onSoundTrackDownloadSuccess(CSoundTrack soundTrack) {
         mTrackAdapter.notifyDataSetChanged();
 		Toast.makeText(this, "Track downloaded id=" + soundTrack.getTrackId(), Toast.LENGTH_LONG).show();
 	}
@@ -252,25 +253,25 @@ public class MainActivity extends SeekBarActivity implements TrackAdapter.SoundT
 	}
 
 	@Override
-	public void onSoundTrackDownloadStart(SoundTrack soundTrack) {
+	public void onSoundTrackDownloadStart(CSoundTrack soundTrack) {
 		mTrackAdapter.notifyDataSetChanged();
 	}
 
 	@Override
-	public void onPlayClick(SoundTrack soundTrack) {
+	public void onPlayClick(CSoundTrack soundTrack) {
 		if(isMediaBound() && soundTrack != null && soundTrack.isDownloaded())
 			playTrackById(soundTrack.getTrackId());
 
 	}
 
 	@Override
-	public void onDownloadClick(SoundTrack soundTrack) {
+	public void onDownloadClick(CSoundTrack soundTrack) {
 		if(isDownloadBound() && soundTrack != null)
 			addDownloadTask(soundTrack);
 	}
 
 	@Override
-	public void onDeleteClick(SoundTrack soundTrack) {
+	public void onDeleteClick(CSoundTrack soundTrack) {
 		File file = new File(soundTrack.getFilePath());
 
 		if(file.exists())

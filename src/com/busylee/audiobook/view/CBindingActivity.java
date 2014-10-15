@@ -1,4 +1,4 @@
-package com.busylee.audiobook;
+package com.busylee.audiobook.view;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -7,19 +7,19 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import com.busylee.audiobook.entities.SoundTrack;
-import com.busylee.audiobook.service.download.DownloadService;
-import com.busylee.audiobook.service.media.MediaPlayerMaster;
-import com.busylee.audiobook.service.media.MediaPlayerService;
+import com.busylee.audiobook.entities.CSoundTrack;
+import com.busylee.audiobook.service.download.CDownloadService;
+import com.busylee.audiobook.service.media.CMediaPlayerMaster;
+import com.busylee.audiobook.service.media.CMediaPlayerService;
 
 /**
  * Created by busylee on 14.04.14.
  */
-public abstract class BindingActivity extends Activity implements MediaPlayerMaster.MediaPlayerObserver, DownloadService.DownLoadServiceObserver {
+public abstract class CBindingActivity extends Activity implements CMediaPlayerMaster.MediaPlayerObserver, CDownloadService.DownLoadServiceObserver {
 
-    MediaPlayerService mMediaService;
+    CMediaPlayerService mMediaService;
 
-	DownloadService mDownloadService;
+	CDownloadService mDownloadService;
 
 
     boolean mMediaBound = false;
@@ -76,11 +76,11 @@ public abstract class BindingActivity extends Activity implements MediaPlayerMas
 
 	protected boolean isPlaying() { return mMediaBound && mMediaService.isPlaying();}
 
-    protected SoundTrack getCurrentTrack(){
+    protected CSoundTrack getCurrentTrack(){
         return mMediaService.getCurrentSoundTrack();
     }
 
-	protected void addDownloadTask(SoundTrack soundTrack){
+	protected void addDownloadTask(CSoundTrack soundTrack){
 		mDownloadService.addDownloadTask(soundTrack);
 	}
 
@@ -93,26 +93,26 @@ public abstract class BindingActivity extends Activity implements MediaPlayerMas
         super.onCreate(savedInstanceState);
 
 		//MediaService
-        startService(new Intent(this, MediaPlayerService.class));
+        startService(new Intent(this, CMediaPlayerService.class));
 
 		//DownloadService
-		startService(new Intent(this, DownloadService.class));
+		startService(new Intent(this, CDownloadService.class));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        Intent mediaPlayerServiceIntent = new Intent(this, MediaPlayerService.class);
+        Intent mediaPlayerServiceIntent = new Intent(this, CMediaPlayerService.class);
         bindService(mediaPlayerServiceIntent, mMediaConnection, Context.BIND_AUTO_CREATE);
 
-		Intent downloadServiceIntent = new Intent(this, DownloadService.class);
+		Intent downloadServiceIntent = new Intent(this, CDownloadService.class);
 		bindService(downloadServiceIntent, mDownLoadConnection, Context.BIND_AUTO_CREATE);
 
     }
 
 	protected void stopMediaService(){
-		stopService(new Intent(this, MediaPlayerService.class));
+		stopService(new Intent(this, CMediaPlayerService.class));
 	}
 
     protected boolean isMediaBound(){
@@ -153,9 +153,9 @@ public abstract class BindingActivity extends Activity implements MediaPlayerMas
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            MediaPlayerService.LocalBinder binder = (MediaPlayerService.LocalBinder) service;
+            CMediaPlayerService.LocalBinder binder = (CMediaPlayerService.LocalBinder) service;
             mMediaService = binder.getService();
-            mMediaService.setObserver(BindingActivity.this);
+            mMediaService.setObserver(CBindingActivity.this);
             mMediaBound = true;
             onMediaServiceBind();
         }
@@ -173,9 +173,9 @@ public abstract class BindingActivity extends Activity implements MediaPlayerMas
 		public void onServiceConnected(ComponentName className,
 									   IBinder service) {
 			// We've bound to LocalService, cast the IBinder and get LocalService instance
-			DownloadService.LocalBinder binder = (DownloadService.LocalBinder) service;
+			CDownloadService.LocalBinder binder = (CDownloadService.LocalBinder) service;
 			mDownloadService = binder.getService();
-			mDownloadService.setObserver(BindingActivity.this);
+			mDownloadService.setObserver(CBindingActivity.this);
 			mDownloadBound = true;
 			onDownloadServiceBind();
 		}

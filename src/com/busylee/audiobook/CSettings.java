@@ -6,22 +6,22 @@ import android.content.SharedPreferences;
 /**
  * Created by busylee on 7/6/14.
  */
-public class Settings {
+public class CSettings {
     private static final String TAG = "Settins";
 
     private static final String PREF_NAME = "steve-settings";
     private SharedPreferences mPreferences;
 
     public static class SingletonHolder {
-        public static final Settings HOLDER_INSTANCE = new Settings();
+        public static final CSettings HOLDER_INSTANCE = new CSettings();
     }
 
-    public static Settings getInstance(Context context) {
+    public static CSettings getInstance(Context context) {
         SingletonHolder.HOLDER_INSTANCE.initializeSettings(context);
         return SingletonHolder.HOLDER_INSTANCE;
     }
 
-    private Settings() {
+    private CSettings() {
 
     }
 
@@ -35,7 +35,7 @@ public class Settings {
      */
     public int getLastSeek() {
         if(mPreferences == null)
-            Locator.getLogger().writeLog(TAG, "preferences is null");
+            CLocator.getLogger().writeLog(TAG, "preferences is null");
 
         return mPreferences.getInt(Keys.LAST_SEEK, -1);
     }
@@ -47,7 +47,7 @@ public class Settings {
     public void storeLastSeek(int seek) {
 
         if(mPreferences == null)
-            Locator.getLogger().writeLog(TAG, "preferences is null");
+            CLocator.getLogger().writeLog(TAG, "preferences is null");
 
         SharedPreferences.Editor editor = mPreferences.edit();
         editor.putInt(Keys.LAST_SEEK, seek);
@@ -61,7 +61,7 @@ public class Settings {
      */
     public int getLastTrackId() {
         if(mPreferences == null)
-            Locator.getLogger().writeLog(TAG, "preferences is null");
+            CLocator.getLogger().writeLog(TAG, "preferences is null");
 
         return mPreferences.getInt(Keys.LAST_TRACK_ID, -1);
     }
@@ -73,7 +73,7 @@ public class Settings {
     public void storeLastTrackId(int trackId) {
 
         if(mPreferences == null)
-            Locator.getLogger().writeLog(TAG, "preferences is null");
+            CLocator.getLogger().writeLog(TAG, "preferences is null");
 
         SharedPreferences.Editor editor = mPreferences.edit();
         editor.putInt(Keys.LAST_TRACK_ID, trackId);
@@ -85,7 +85,7 @@ public class Settings {
      * Удаляем данные по последнему треку
      */
     public void resetLast() {
-        Locator.getLogger().writeLog(TAG, "reset last");
+        CLocator.getLogger().writeLog(TAG, "reset last");
         storeLastTrackId(-1);
         storeLastSeek(-1);
     }

@@ -1,11 +1,11 @@
-package com.busylee.audiobook;
+package com.busylee.audiobook.view;
 
 import android.widget.SeekBar;
 
 /**
  * Created by busylee on 4/26/14.
  */
-public abstract class SeekBarActivity extends  BindingActivity implements SeekBar.OnSeekBarChangeListener {
+public abstract class CSeekBarActivity extends CBindingActivity implements SeekBar.OnSeekBarChangeListener {
 
     @Override
     public void onPrepared(int seek){

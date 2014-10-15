@@ -2,12 +2,12 @@ package com.busylee.audiobook.entities;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import com.busylee.audiobook.base.SoundTrackStorage;
+import com.busylee.audiobook.base.CSoundTrackStorage;
 
 /**
  * Created by busylee on 4/14/14.
  */
-public class SoundTrack {
+public class CSoundTrack {
 
     public final static int NO_ID = -1;
 
@@ -43,7 +43,7 @@ public class SoundTrack {
     /** Текущее положение трека */
     private int mSeek;
 
-    public SoundTrack(String fileName, String fileUrl, String filePath, boolean isDownloaded){
+    public CSoundTrack(String fileName, String fileUrl, String filePath, boolean isDownloaded){
         mFileName = fileName;
 		mFileUrl = fileUrl;
         mFilePath = filePath;
@@ -52,20 +52,20 @@ public class SoundTrack {
         mIsViewed = false;
     }
 
-    public SoundTrack(Cursor cursor){
-        mTrackId = cursor.getInt(cursor.getColumnIndex(SoundTrackStorage.SoundTrackDBHelper.FIELD_ID));
-        mFileName = cursor.getString(cursor.getColumnIndex(SoundTrackStorage.SoundTrackDBHelper.FIELD_NAME));
-        mFileUrl = cursor.getString(cursor.getColumnIndex(SoundTrackStorage.SoundTrackDBHelper.FIELD_LINK));
-        mFilePath = cursor.getString(cursor.getColumnIndex(SoundTrackStorage.SoundTrackDBHelper.FIELD_FILE_PATH));
-        mSeek = cursor.getInt(cursor.getColumnIndex(SoundTrackStorage.SoundTrackDBHelper.FIELD_SEEK));
-		mDownloadProgress = cursor.getInt(cursor.getColumnIndex(SoundTrackStorage.SoundTrackDBHelper.FIELD_DOWNLOAD_PROGRESS));
+    public CSoundTrack(Cursor cursor){
+        mTrackId = cursor.getInt(cursor.getColumnIndex(CSoundTrackStorage.SoundTrackDBHelper.FIELD_ID));
+        mFileName = cursor.getString(cursor.getColumnIndex(CSoundTrackStorage.SoundTrackDBHelper.FIELD_NAME));
+        mFileUrl = cursor.getString(cursor.getColumnIndex(CSoundTrackStorage.SoundTrackDBHelper.FIELD_LINK));
+        mFilePath = cursor.getString(cursor.getColumnIndex(CSoundTrackStorage.SoundTrackDBHelper.FIELD_FILE_PATH));
+        mSeek = cursor.getInt(cursor.getColumnIndex(CSoundTrackStorage.SoundTrackDBHelper.FIELD_SEEK));
+		mDownloadProgress = cursor.getInt(cursor.getColumnIndex(CSoundTrackStorage.SoundTrackDBHelper.FIELD_DOWNLOAD_PROGRESS));
 
         mIsDownloaded = false;
-        if( cursor.getInt(cursor.getColumnIndex(SoundTrackStorage.SoundTrackDBHelper.FIELD_DOWNLOADED)) == DOWNLOADED )
+        if( cursor.getInt(cursor.getColumnIndex(CSoundTrackStorage.SoundTrackDBHelper.FIELD_DOWNLOADED)) == DOWNLOADED )
             mIsDownloaded = true;
 
         mIsViewed = false;
-        if( cursor.getInt(cursor.getColumnIndex(SoundTrackStorage.SoundTrackDBHelper.FIELD_VIEWED)) == VIEWED )
+        if( cursor.getInt(cursor.getColumnIndex(CSoundTrackStorage.SoundTrackDBHelper.FIELD_VIEWED)) == VIEWED )
             mIsViewed = true;
 
     }
@@ -147,22 +147,22 @@ public class SoundTrack {
 
     public ContentValues getContentValues(){
         ContentValues contentValues = new ContentValues();
-        contentValues.put(SoundTrackStorage.SoundTrackDBHelper.FIELD_NAME, mFileName);
-        contentValues.put(SoundTrackStorage.SoundTrackDBHelper.FIELD_LINK, mFileUrl);
-        contentValues.put(SoundTrackStorage.SoundTrackDBHelper.FIELD_FILE_PATH, mFilePath);
-        contentValues.put(SoundTrackStorage.SoundTrackDBHelper.FIELD_SEEK, mSeek);
-        contentValues.put(SoundTrackStorage.SoundTrackDBHelper.FIELD_DOWNLOADED, mIsDownloaded ? DOWNLOADED : NOT_DOWNLOADED);
-        contentValues.put(SoundTrackStorage.SoundTrackDBHelper.FIELD_VIEWED, mIsViewed ? VIEWED : NOT_VIEWED);
-		contentValues.put(SoundTrackStorage.SoundTrackDBHelper.FIELD_DOWNLOAD_PROGRESS, mDownloadProgress);
+        contentValues.put(CSoundTrackStorage.SoundTrackDBHelper.FIELD_NAME, mFileName);
+        contentValues.put(CSoundTrackStorage.SoundTrackDBHelper.FIELD_LINK, mFileUrl);
+        contentValues.put(CSoundTrackStorage.SoundTrackDBHelper.FIELD_FILE_PATH, mFilePath);
+        contentValues.put(CSoundTrackStorage.SoundTrackDBHelper.FIELD_SEEK, mSeek);
+        contentValues.put(CSoundTrackStorage.SoundTrackDBHelper.FIELD_DOWNLOADED, mIsDownloaded ? DOWNLOADED : NOT_DOWNLOADED);
+        contentValues.put(CSoundTrackStorage.SoundTrackDBHelper.FIELD_VIEWED, mIsViewed ? VIEWED : NOT_VIEWED);
+		contentValues.put(CSoundTrackStorage.SoundTrackDBHelper.FIELD_DOWNLOAD_PROGRESS, mDownloadProgress);
         return contentValues;
     }
 
     @Override
     public boolean equals(Object object){
-        if(!(object instanceof SoundTrack))
+        if(!(object instanceof CSoundTrack))
             return false;
 
-        return ((SoundTrack) object).getTrackId() == this.getTrackId();
+        return ((CSoundTrack) object).getTrackId() == this.getTrackId();
     }
 
 	public boolean isDownloading() {

@@ -9,7 +9,7 @@ import android.media.AudioManager;
 /**
  * Created by busylee on 14.04.14.
  */
-public class AudioFocusMasterService extends MediaPlayerMaster {
+public class CAudioFocusMasterService extends CMediaPlayerMaster {
 
 	private boolean mRegister = false;
 	NoisyAudioStreamReceiver mNoisyAudioStreamReceiver = new NoisyAudioStreamReceiver();

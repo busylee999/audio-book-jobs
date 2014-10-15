@@ -4,14 +4,14 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import com.busylee.audiobook.MainActivity;
+import com.busylee.audiobook.service.CCustomService;
+import com.busylee.audiobook.view.CMainActivity;
 import com.busylee.audiobook.R;
-import com.busylee.audiobook.service.CustomService;
 
 /**
  * Created by busylee on 14.04.14.
  */
-public class ForegroundService extends CustomService {
+public class CForegroundService extends CCustomService {
 
     final static int NOTIFICATION_ID = 1;
     final static int NOTIFICATION_ICON_PLAY_ID = R.drawable.play;
@@ -27,7 +27,7 @@ public class ForegroundService extends CustomService {
     }
 
     private Notification getCurrentNotification(){
-		Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+		Intent intent = new Intent(getApplicationContext(), CMainActivity.class);
 
         PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0,
         		intent ,

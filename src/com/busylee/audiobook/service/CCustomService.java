@@ -3,12 +3,12 @@ package com.busylee.audiobook.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import com.busylee.audiobook.AudioBookApplication;
+import com.busylee.audiobook.CAudioBookApplication;
 
 /**
  * Created by busylee on 14.04.14.
  */
-public class CustomService extends Service {
+public class CCustomService extends Service {
 
     @Override
     public void onCreate() {
@@ -30,8 +30,8 @@ public class CustomService extends Service {
         return null;
     }
 
-    protected AudioBookApplication getCustomApplication(){
-        return (AudioBookApplication) getApplication();
+    protected CAudioBookApplication getCustomApplication(){
+        return (CAudioBookApplication) getApplication();
     }
 
 }

@@ -3,15 +3,15 @@ package com.busylee.audiobook.service.media;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import com.busylee.audiobook.base.SoundTrackStorage;
-import com.busylee.audiobook.entities.SoundTrack;
+import com.busylee.audiobook.base.CSoundTrackStorage;
+import com.busylee.audiobook.entities.CSoundTrack;
 
 import java.io.IOException;
 
 /**
  * Created by busylee on 14.04.14.
  */
-public class MediaPlayerService extends AudioFocusMasterService {
+public class CMediaPlayerService extends CAudioFocusMasterService {
 
 	/** Показывает необходимо ли реагировать на восстановление последнего трека
 	 *  Реагирует только один раз, при первом запуске сервиса
@@ -24,7 +24,7 @@ public class MediaPlayerService extends AudioFocusMasterService {
 
     }
 
-    private SoundTrackStorage getSoundTrackStorage(){
+    private CSoundTrackStorage getSoundTrackStorage(){
         return getCustomApplication().getSoundTrackStorage();
     }
 
@@ -42,7 +42,7 @@ public class MediaPlayerService extends AudioFocusMasterService {
      * Текущий трек
      * @return
      */
-    public SoundTrack getCurrentSoundTrack() {
+    public CSoundTrack getCurrentSoundTrack() {
         return getSoundTrackStorage().getCurrentSoundTrack();
     }
 
@@ -61,7 +61,7 @@ public class MediaPlayerService extends AudioFocusMasterService {
 	 * @param soundTrack
 	 * @param seek
 	 */
-    private void playSoundTrack(SoundTrack soundTrack, int seek){
+    private void playSoundTrack(CSoundTrack soundTrack, int seek){
         if (soundTrack != null){
             try {
 				playFilePath(soundTrack.getFilePath(), seek);
@@ -78,7 +78,7 @@ public class MediaPlayerService extends AudioFocusMasterService {
 	 * Простое проигрывание трека, загрузка файла и автоматическое начало проигрывания с 0
 	 * @param soundTrack
 	 */
-    private void playSoundTrack(SoundTrack soundTrack){
+    private void playSoundTrack(CSoundTrack soundTrack){
        playSoundTrack(soundTrack, 0);
     }
 
@@ -87,7 +87,7 @@ public class MediaPlayerService extends AudioFocusMasterService {
 	 * @param soundTrack
 	 * @param seek
 	 */
-	private void setSoundTrack(SoundTrack soundTrack, int seek) {
+	private void setSoundTrack(CSoundTrack soundTrack, int seek) {
 		if (soundTrack != null){
 			try {
 				setFilePath(soundTrack.getFilePath(), seek);
@@ -110,7 +110,7 @@ public class MediaPlayerService extends AudioFocusMasterService {
     public void reloadLast(int trackId, int seek) {
 		if(mNeesRestoreLast) {
 			mNeesRestoreLast = false;
-			SoundTrack track = getSoundTrackStorage().getSoundTrackById(trackId);
+			CSoundTrack track = getSoundTrackStorage().getSoundTrackById(trackId);
 
 			if(track.isDownloaded())
 				setSoundTrack(track, seek);
@@ -125,9 +125,9 @@ public class MediaPlayerService extends AudioFocusMasterService {
      * runs in the same process as its clients, we don't need to deal with IPC.
      */
     public class LocalBinder extends Binder {
-        public MediaPlayerService getService() {
+        public CMediaPlayerService getService() {
             // Return this instance of LocalService so clients can call public methods
-            return MediaPlayerService.this;
+            return CMediaPlayerService.this;
         }
     }
 

@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import com.busylee.audiobook.entities.SoundTrack;
+import com.busylee.audiobook.entities.CSoundTrack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,31 +14,31 @@ import java.util.List;
 /**
  * Created by busylee on 4/14/14.
  */
-public class SoundTrackStorage {
+public class CSoundTrackStorage {
 
     private static SoundTrackDBHelper mSoundTrackDBHelper;
 
-    List<SoundTrack> mSoundTrackList = new ArrayList<SoundTrack>();
+    List<CSoundTrack> mSoundTrackList = new ArrayList<CSoundTrack>();
 
     int mSoundTrackNumber = 0;
 
 	public static class SingletonHolder {
-		public static final SoundTrackStorage HOLDER_INSTANCE = new SoundTrackStorage();
+		public static final CSoundTrackStorage HOLDER_INSTANCE = new CSoundTrackStorage();
 	}
 
-	public static SoundTrackStorage getInstance(Context context) {
+	public static CSoundTrackStorage getInstance(Context context) {
         SingletonHolder.HOLDER_INSTANCE.initializeSoundTracks(context);
 		return SingletonHolder.HOLDER_INSTANCE;
 	}
 
-    private SoundTrackStorage(){
+    private CSoundTrackStorage(){
     }
 
-    public List<SoundTrack> getSoundTrackList(){
+    public List<CSoundTrack> getSoundTrackList(){
         return mSoundTrackList;
     }
 
-    public SoundTrack getNextSoundTrack(){
+    public CSoundTrack getNextSoundTrack(){
         if(mSoundTrackList.isEmpty())
             return null;
 
@@ -48,23 +48,23 @@ public class SoundTrackStorage {
         return mSoundTrackList.get(mSoundTrackNumber);
     }
 
-    public void updateTrackInfo(SoundTrack soundTrack){
+    public void updateTrackInfo(CSoundTrack soundTrack){
         if(mSoundTrackDBHelper != null)
             mSoundTrackDBHelper.updateSoundTrack(soundTrack);
     }
 
-    public SoundTrack getCurrentSoundTrack(){
+    public CSoundTrack getCurrentSoundTrack(){
         if(mSoundTrackList.isEmpty())
             return null;
 
         return mSoundTrackList.get(mSoundTrackNumber);
     }
 
-    public SoundTrack getSoundTrackById(int trackId){
+    public CSoundTrack getSoundTrackById(int trackId){
         if(mSoundTrackList.isEmpty())
             return null;
 
-        for(SoundTrack soundTrack : mSoundTrackList)
+        for(CSoundTrack soundTrack : mSoundTrackList)
             if(soundTrack.getTrackId() == trackId){
                 mSoundTrackNumber = mSoundTrackList.indexOf(soundTrack);
                 return  soundTrack;
@@ -84,7 +84,7 @@ public class SoundTrackStorage {
         if(soundTrackCursor != null)
             if(soundTrackCursor.moveToFirst())
                 do{
-                    mSoundTrackList.add(new SoundTrack(soundTrackCursor));
+                    mSoundTrackList.add(new CSoundTrack(soundTrackCursor));
                 } while(soundTrackCursor.moveToNext());
 
     }
@@ -126,17 +126,17 @@ public class SoundTrackStorage {
 					+ FIELD_DOWNLOAD_PROGRESS + " integer"
                     + ");");
 
-            insertSoundTracks(db, TrackBase.trackFileList);
+            insertSoundTracks(db, CTrackBase.trackFileList);
 
         }
 
-        public void insertSoundTracks(SQLiteDatabase database, List<SoundTrack> soundTrackList){
+        public void insertSoundTracks(SQLiteDatabase database, List<CSoundTrack> soundTrackList){
 
             database.beginTransaction();
 
             try{
 
-                for(SoundTrack soundTrack : soundTrackList)
+                for(CSoundTrack soundTrack : soundTrackList)
                     insertSoundTrack(database, soundTrack);
 
                 database.setTransactionSuccessful();
@@ -148,7 +148,7 @@ public class SoundTrackStorage {
 
         }
 
-        public void insertSoundTrack(SQLiteDatabase database, SoundTrack soundTrack){
+        public void insertSoundTrack(SQLiteDatabase database, CSoundTrack soundTrack){
             ContentValues values = soundTrack.getContentValues();
 
             if(database.insert(TABLE_NAME, null, values) < 0)
@@ -166,7 +166,7 @@ public class SoundTrackStorage {
             return database.query(TABLE_NAME, null,null, null,null,null, FIELD_ID + " ASC");
         }
 
-        public void updateSoundTrack(SoundTrack soundTrack) {
+        public void updateSoundTrack(CSoundTrack soundTrack) {
             SQLiteDatabase database = getWritableDatabase();
 
             database.update(TABLE_NAME,

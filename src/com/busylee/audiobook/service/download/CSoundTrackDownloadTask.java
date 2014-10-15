@@ -3,7 +3,7 @@ package com.busylee.audiobook.service.download;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import com.busylee.audiobook.entities.SoundTrack;
+import com.busylee.audiobook.entities.CSoundTrack;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -12,7 +12,7 @@ import java.net.URL;
 /**
  * Created by busylee on 17.04.14.
  */
-public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack> {
+public class CSoundTrackDownloadTask extends AsyncTask<Void, Integer, CSoundTrack> {
 
 	public static class Errors {
 		public static int E_NO_ERROR = 0;
@@ -29,12 +29,12 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 	static final int PROGRESS_SENDING_COUNT = 100000;
 
 	private SoundTrackDownloadObserver mSoundTrackDownloadCompleteObserver;
-	private SoundTrack mSoundTrack;
+	private CSoundTrack mSoundTrack;
 	private Context mContext;
-	private DownloadService.TSaveFileMode mSaveFileMode;
+	private CDownloadService.TSaveFileMode mSaveFileMode;
 	private int mError = Errors.E_NO_ERROR;
 
-	public SoundTrackDownloadTask(SoundTrack soundTrack, SoundTrackDownloadObserver soundTrackDownloadCompleteObserver, Context context, DownloadService.TSaveFileMode saveFileMode){
+	public CSoundTrackDownloadTask(CSoundTrack soundTrack, SoundTrackDownloadObserver soundTrackDownloadCompleteObserver, Context context, CDownloadService.TSaveFileMode saveFileMode){
 		super();
 
 		mSoundTrack = soundTrack;
@@ -47,7 +47,7 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 	}
 
     @Override
-    protected SoundTrack doInBackground(Void... params) {
+    protected CSoundTrack doInBackground(Void... params) {
 		File file;
 
 		file = getFileForSoundTrack();
@@ -82,7 +82,7 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 	}
 
 	@Override
-	protected void onPostExecute(SoundTrack soundTrack) {
+	protected void onPostExecute(CSoundTrack soundTrack) {
 		mSoundTrack.setIsDownloading(false);
 		if(mSoundTrackDownloadCompleteObserver != null)
 			if(soundTrack != null)
@@ -191,7 +191,7 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 	public File getFileForSoundTrack(){
 		File file;
 
-		if(mSaveFileMode == DownloadService.TSaveFileMode.INTERNAL)
+		if(mSaveFileMode == CDownloadService.TSaveFileMode.INTERNAL)
 			file = getInternalFile(mContext, mSoundTrack);
 		else
 			file = getExternalFile(mContext, mSoundTrack);
@@ -205,7 +205,7 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 	 * @param soundTrack
 	 * @return
 	 */
-	public static File getInternalFile(Context context, SoundTrack soundTrack){
+	public static File getInternalFile(Context context, CSoundTrack soundTrack){
 		return new File(context.getFilesDir(), soundTrack.getFileName());
 	}
 
@@ -215,15 +215,15 @@ public class SoundTrackDownloadTask extends AsyncTask<Void, Integer, SoundTrack>
 	 * @param soundTrack
 	 * @return
 	 */
-	public static File getExternalFile(Context context, SoundTrack soundTrack){
+	public static File getExternalFile(Context context, CSoundTrack soundTrack){
 		return new File(context.getExternalFilesDir(null), soundTrack.getFileName());
 	}
 
 	public interface SoundTrackDownloadObserver {
-		public void onStartDownloadTrack(SoundTrack soundTrack);
-		public void onSoundTrackDownloadComplete (SoundTrack soundTrack);
-		public void onSoundTrackDownloadError(int error, SoundTrack soundTrack);
-		public void onSoundTrackDownloadProgress(SoundTrack soundTrack);
+		public void onStartDownloadTrack(CSoundTrack soundTrack);
+		public void onSoundTrackDownloadComplete (CSoundTrack soundTrack);
+		public void onSoundTrackDownloadError(int error, CSoundTrack soundTrack);
+		public void onSoundTrackDownloadProgress(CSoundTrack soundTrack);
 	}
 
 }

@@ -3,14 +3,14 @@ package com.busylee.audiobook.service.media;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.PowerManager;
-import com.busylee.audiobook.entities.SoundTrack;
+import com.busylee.audiobook.entities.CSoundTrack;
 
 import java.io.IOException;
 
 /**
  * Created by busylee on 14.04.14.
  */
-public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
+public class CMediaPlayerMaster extends CForegroundService implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
 
 	/** Задержка перед повторной проверкой текущей позиции и уведомления обозревателя */
     final static int SEEK_CHECK_DELAY = 500;
@@ -286,7 +286,7 @@ public class MediaPlayerMaster extends ForegroundService implements MediaPlayer.
 
         public void onPrepared(int seek);
 
-        public void onSoundTrackChange(SoundTrack soundTrack);
+        public void onSoundTrackChange(CSoundTrack soundTrack);
 
         public void onCurrentTrackSeekChange(int seconds);
 
