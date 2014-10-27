@@ -38,15 +38,40 @@ public class CSoundTrackStorage {
         return mSoundTrackList;
     }
 
+	public void moveToNext(){
+		if( ++ mSoundTrackNumber >= mSoundTrackList.size())
+			mSoundTrackNumber = 0;
+	}
+
+	public void moveToPrev() {
+		if( -- mSoundTrackNumber < 0 )
+			mSoundTrackNumber = mSoundTrackList.size() - 1;
+	}
+
     public CSoundTrack getNextSoundTrack(){
+
         if(mSoundTrackList.isEmpty())
             return null;
 
-        if( ++ mSoundTrackNumber >= mSoundTrackList.size())
-            mSoundTrackNumber = 0;
+		int soundTrackNumber = mSoundTrackNumber;
 
-        return mSoundTrackList.get(mSoundTrackNumber);
+		if( ++ soundTrackNumber >= mSoundTrackList.size())
+			soundTrackNumber = 0;
+
+        return mSoundTrackList.get(soundTrackNumber);
     }
+
+	public CSoundTrack getPrevSoundTrack() {
+		if(mSoundTrackList.isEmpty())
+			return null;
+
+		int soundTrackNumber = mSoundTrackNumber;
+
+		if( -- soundTrackNumber < 0 )
+			soundTrackNumber = mSoundTrackList.size() - 1;
+
+		return mSoundTrackList.get(soundTrackNumber);
+	}
 
     public void updateTrackInfo(CSoundTrack soundTrack){
         if(mSoundTrackDBHelper != null)

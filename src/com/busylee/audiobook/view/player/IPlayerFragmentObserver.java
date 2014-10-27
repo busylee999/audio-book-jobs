@@ -9,6 +9,8 @@ public interface IPlayerFragmentObserver {
 	void pausePlay();
 	void resumePlay();
 	void playNextTrack();
+	void playPrevTrack();
+
 	void seekTo(int i);
 
 	boolean isPlaying();

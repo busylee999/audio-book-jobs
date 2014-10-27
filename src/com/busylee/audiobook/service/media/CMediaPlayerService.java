@@ -35,8 +35,18 @@ public class CMediaPlayerService extends CAudioFocusMasterService {
         reset();
 
         playSoundTrack(getSoundTrackStorage().getNextSoundTrack());
-
+		getSoundTrackStorage().moveToNext();
     }
+
+	/**
+	 * Начать проигрывание предыдущего трека
+	 */
+	public void playPrev() {
+		reset();
+
+		playSoundTrack(getSoundTrackStorage().getPrevSoundTrack());
+		getSoundTrackStorage().moveToPrev();
+	}
 
     /**
      * Текущий трек
@@ -120,7 +130,7 @@ public class CMediaPlayerService extends CAudioFocusMasterService {
 	// Binder given to clients
 	private final IBinder mBinder = new LocalBinder();
 
-    /**
+	/**
      * Class used for the client Binder.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with IPC.
      */

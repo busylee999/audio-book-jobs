@@ -51,6 +51,8 @@ public abstract class CBindingActivity extends CBaseActivity implements CMediaPl
         mMediaService.playNext();
     }
 
+	public void playPrevTrack() { mMediaService.playPrev(); }
+
     /**
      * Начать проигрывать трек по Id
      * @param trackId

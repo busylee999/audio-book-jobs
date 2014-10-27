@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.busylee.audiobook.R;
 import com.busylee.audiobook.entities.CSoundTrack;
 
@@ -59,6 +58,7 @@ public class CPlayerFragment extends Fragment implements SeekBar.OnSeekBarChange
 		mBtnPause.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				showPlayButton();
 				mObserver.pausePlay();
 			}
 		});
@@ -66,6 +66,7 @@ public class CPlayerFragment extends Fragment implements SeekBar.OnSeekBarChange
 		mBtnResume.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				showPauseButton();
 				mObserver.resumePlay();
 			}
 		});
@@ -80,8 +81,7 @@ public class CPlayerFragment extends Fragment implements SeekBar.OnSeekBarChange
 		mBtnPrev.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				//todo stub
-				Toast.makeText(getActivity(), "stub", Toast.LENGTH_SHORT).show();
+				mObserver.playPrevTrack();
 			}
 		});
 	}

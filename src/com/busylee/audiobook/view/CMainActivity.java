@@ -72,9 +72,18 @@ public class CMainActivity extends CBindingActivity implements CTrackAdapter.Sou
 		lvTrackList.setAdapter(getTrackAdapter());
     }
 
+	@Override
 	public void playNextTrack() {
 		if (getSoundTrackStorage().getNextSoundTrack().isDownloaded())
 			super.playNextTrack();
+		else
+			Toast.makeText(this, getString(R.string.toast_error_next_track_does_not_downloaded), Toast.LENGTH_SHORT).show();
+	}
+
+	@Override
+	public void playPrevTrack() {
+		if (getSoundTrackStorage().getPrevSoundTrack().isDownloaded())
+			super.playPrevTrack();
 		else
 			Toast.makeText(this, getString(R.string.toast_error_next_track_does_not_downloaded), Toast.LENGTH_SHORT).show();
 	}
