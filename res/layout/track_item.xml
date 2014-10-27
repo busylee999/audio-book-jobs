@@ -8,17 +8,23 @@
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:weightSum="2">
         <TextView
                 android:id="@+id/tvTrackName"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="New Text"/>
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="New Text"
+                android:layout_weight="1"
+                />
         <TextView
                 android:id="@+id/tvProgress"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_weight="1"
                 android:text="New Text"/>
     </LinearLayout>
     <ProgressBar

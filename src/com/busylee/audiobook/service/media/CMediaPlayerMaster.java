@@ -22,7 +22,7 @@ public class CMediaPlayerMaster extends CForegroundService implements MediaPlaye
     private int mSeek = -1;
 
 	/** Обозреватель действий Медиа Сервиса */
-    protected MediaPlayerObserver mObserver;
+    protected IMediaPlayerObserver mObserver;
 
     private Handler mHandler = new Handler();
 
@@ -54,7 +54,7 @@ public class CMediaPlayerMaster extends CForegroundService implements MediaPlaye
         initMediaPlayer();
     }
 
-    public void setObserver(MediaPlayerObserver observer){
+    public void setObserver(IMediaPlayerObserver observer){
         mObserver = observer;
     }
 
@@ -126,13 +126,16 @@ public class CMediaPlayerMaster extends CForegroundService implements MediaPlaye
     /**
      * Начать проигрывать трек
      */
-    public void startPlay(){
+    public void startPlay() {
 		onStartPlayBack();
+
+		if(mObserver != null)
+			mObserver.onPlayResume();
+
         mMediaPlayer.start();
         startSeekCheck();
         showForeground();
-        if(mObserver != null)
-            mObserver.onPlayResume();
+
     }
 
     /**
@@ -140,29 +143,34 @@ public class CMediaPlayerMaster extends CForegroundService implements MediaPlaye
      */
     public void resumePlay() {
 		onStartPlayBack();
+
+		if(mObserver != null)
+			mObserver.onPlayResume();
+
         mMediaPlayer.start();
         startSeekCheck();
         showForeground();
-        if(mObserver != null)
-            mObserver.onPlayResume();
+
     }
 
     /**
      * Приостановить проигрывание трека
      */
-    public void pausePlay()  {
+    public void pausePlay() {
 		onStopPlayBack();
+
+		if(mObserver != null)
+			mObserver.onPlayPause(mMediaPlayer.getCurrentPosition());
+
         mMediaPlayer.pause();
         stopSeekCheck();
         showForeground();
-        if(mObserver != null)
-            mObserver.onPlayPause(mMediaPlayer.getCurrentPosition());
     }
 
     /**
      * Остановить проигрывание трека
      */
-    public void stopPlay(){
+    public void stopPlay() {
 		onStopPlayBack();
         mMediaPlayer.stop();
         stopSeekCheck();
@@ -176,11 +184,6 @@ public class CMediaPlayerMaster extends CForegroundService implements MediaPlaye
      */
     protected void reset(){
         mMediaPlayer.reset();
-    }
-
-    protected void release(){
-        removeForeground();
-        mMediaPlayer.release();
     }
 
 	/**
@@ -239,7 +242,7 @@ public class CMediaPlayerMaster extends CForegroundService implements MediaPlaye
     }
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         stopSeekCheck();
         if(mMediaPlayer != null)
             mMediaPlayer.release();
@@ -247,17 +250,9 @@ public class CMediaPlayerMaster extends CForegroundService implements MediaPlaye
     }
 
     /**
-     * При изменении seek у текущего трека
-     * @param seek
-     */
-    protected void onSeekCurrentTrackChange(int seek){
-
-    }
-
-    /**
      * Стартуем начало проверки seek
      */
-    private void startSeekCheck(){
+    private void startSeekCheck() {
         if(mNeedRepeat != true){
             mNeedRepeat = true;
             mHandler.postDelayed(mSeekCheckRunnable, SEEK_CHECK_DELAY);
@@ -275,11 +270,11 @@ public class CMediaPlayerMaster extends CForegroundService implements MediaPlaye
     /**
      * Останавливаем проверку seek
      */
-    private void stopSeekCheck(){
+    private void stopSeekCheck() {
         mNeedRepeat = false;
     }
 
-    public interface MediaPlayerObserver{
+    public interface IMediaPlayerObserver {
         public void onPlayResume();
         public void onPlayPause(int seek);
         public void onPlayStop();

@@ -123,20 +123,6 @@ public class CSoundTrack {
 		mFilePath = filePath;
 	}
 
-    /**
-     * Устанавливаем seek для трека
-     * отвечает за то сколько было прослушано
-     * @param seek
-     */
-    public void setSeek(int seek){
-        if(seek > mSeek)
-            mSeek = seek;
-    }
-
-    public long getSeek(){
-        return mSeek;
-    }
-
 	/**
 	 * Получение Id трека
 	 * @return
@@ -164,6 +150,14 @@ public class CSoundTrack {
 
         return ((CSoundTrack) object).getTrackId() == this.getTrackId();
     }
+
+	public boolean isViewed() {
+		return mIsViewed;
+	}
+
+	public void view() {
+		mIsViewed = true;
+	}
 
 	public boolean isDownloading() {
 		return mIsDownloading;

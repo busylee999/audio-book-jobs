@@ -39,7 +39,7 @@ public class CForegroundService extends CCustomService {
                 .setContentTitle(getNotificationTitle())
                 .setContentText(getNotificationText())
                 .setSmallIcon(getCurrentIcon())
-				.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.jobs_face))
+				.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.jobs_face_notification))
                 .getNotification();
     }
 

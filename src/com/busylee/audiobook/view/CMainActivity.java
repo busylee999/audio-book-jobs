@@ -10,14 +10,19 @@ import com.busylee.audiobook.CLocator;
 import com.busylee.audiobook.CTrackAdapter;
 import com.busylee.audiobook.R;
 import com.busylee.audiobook.entities.CSoundTrack;
+import com.busylee.audiobook.view.dialog.IAAlertDialogObserver;
 import com.busylee.audiobook.view.player.CPlayerFragment;
 import com.busylee.audiobook.view.player.IPlayerFragmentObserver;
 
 import java.io.File;
 
+import static com.busylee.audiobook.view.dialog.CAAlertDialogFragment.TButton;
+import static com.busylee.audiobook.view.dialog.CAAlertDialogFragment.newInstance;
+
 public class CMainActivity extends CBindingActivity implements CTrackAdapter.SoundTrackClickListener, IPlayerFragmentObserver {
 
     static final String TAG = "MainActivity";
+	static final String DELETE_DIALOG_TAG = "DELETE_DIALOG_TAG";
 	static final int EXIT_OPTION_MENU_ITEM = 0;
 
 	private CTrackAdapter mTrackAdapter;
@@ -199,15 +204,22 @@ public class CMainActivity extends CBindingActivity implements CTrackAdapter.Sou
 	}
 
 	@Override
-	public void onDeleteClick(CSoundTrack soundTrack) {
-		File file = new File(soundTrack.getFilePath());
+	public void onDeleteClick(final CSoundTrack soundTrack) {
+		final File file = new File(soundTrack.getFilePath());
 
 		if(file.exists())
-			if(file.delete()) {
-				Toast.makeText(this, "Sound track file was removed", Toast.LENGTH_SHORT).show();
-				soundTrack.onFileRemoved();
-				getSoundTrackStorage().updateTrackInfo(soundTrack);
-				mTrackAdapter.notifyDataSetChanged();
-			}
+			newInstance(getString(R.string.delete_dialog_title), null, R.string.delete, R.string.cancel, new IAAlertDialogObserver() {
+				@Override
+				public void alertDialogButtonPressed(String tag, TButton button) {
+					if (button == TButton.EPositiveButton) {
+						if(file.delete()) {
+							soundTrack.onFileRemoved();
+							getSoundTrackStorage().updateTrackInfo(soundTrack);
+							mTrackAdapter.notifyDataSetChanged();
+							Toast.makeText(CMainActivity.this, getString(R.string.sound_track_removed), Toast.LENGTH_SHORT).show();
+						}
+					}
+				}
+			}).show(getFragmentManager(), DELETE_DIALOG_TAG);
 	}
 }

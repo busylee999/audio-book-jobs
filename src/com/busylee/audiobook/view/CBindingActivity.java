@@ -14,7 +14,7 @@ import com.busylee.audiobook.service.media.CMediaPlayerService;
 /**
  * Created by busylee on 14.04.14.
  */
-public abstract class CBindingActivity extends CBaseActivity implements CMediaPlayerMaster.MediaPlayerObserver, CDownloadService.DownLoadServiceObserver {
+public abstract class CBindingActivity extends CBaseActivity implements CMediaPlayerMaster.IMediaPlayerObserver, CDownloadService.DownLoadServiceObserver {
 
     CMediaPlayerService mMediaService;
 
