@@ -3,10 +3,13 @@
     <string name="app_name">SteveJobs audio book</string>
     <string name="toast_error_next_track_does_not_downloaded">Следующий трек пока что не загружен</string>
     <string name="delete_dialog_title">Вы действительно хотите удалить файл выбранного трека</string>
+    <string name="play_not_downloaded_dialog_title">Звуковой файл для данной части еще не скачан. Добавить в очередь скачивания?</string>
 
     <string name="sound_track_removed">Файл для трека удален</string>
 
+    <string name="add">Добавить</string>
     <string name="delete">Удалить</string>
     <string name="cancel">Отмена</string>
     <string name="acra_toast_text">Уууупс, кажется что-то пошло не так. Мы уже получили отчет об ошибке и начали над ней работать. Спасибо!</string>
+
 </resources>

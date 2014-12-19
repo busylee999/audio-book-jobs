@@ -62,14 +62,6 @@ public class CTrackAdapter extends BaseAdapter {
 		} else
 			view.findViewById(R.id.tvProgress).setVisibility(View.GONE);
 
-		(view.findViewById(R.id.btnPlay)).setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				if(mSoundTrackClickListener != null)
-					mSoundTrackClickListener.onPlayClick(soundTrack);
-			}
-		});
-
 		(view.findViewById(R.id.btnLoad)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -86,7 +78,6 @@ public class CTrackAdapter extends BaseAdapter {
 			}
 		});
 
-		(view.findViewById(R.id.btnPlay)).setVisibility(soundTrack.isDownloaded() ? View.VISIBLE : View.GONE);
 		(view.findViewById(R.id.btnDelete)).setVisibility(soundTrack.isDownloaded() ? View.VISIBLE : View.GONE);
         (view.findViewById(R.id.btnLoad)).setVisibility(soundTrack.isDownloaded() || soundTrack.isDownloading() ? View.GONE : View.VISIBLE);
 		(view.findViewById(R.id.tvDownloading)).setVisibility(soundTrack.isDownloading() ? View.VISIBLE : View.GONE);
@@ -98,7 +89,6 @@ public class CTrackAdapter extends BaseAdapter {
     }
 
 	public interface SoundTrackClickListener {
-		public void onPlayClick(CSoundTrack soundTrack);
 		public void onDownloadClick(CSoundTrack soundTrack);
 		public void onDeleteClick(CSoundTrack soundTrack);
 	}
