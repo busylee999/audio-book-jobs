@@ -81,6 +81,12 @@ public class CTrackAdapter extends BaseAdapter {
 		(view.findViewById(R.id.btnDelete)).setVisibility(soundTrack.isDownloaded() ? View.VISIBLE : View.GONE);
         (view.findViewById(R.id.btnLoad)).setVisibility(soundTrack.isDownloaded() || soundTrack.isDownloading() ? View.GONE : View.VISIBLE);
 		(view.findViewById(R.id.tvDownloading)).setVisibility(soundTrack.isDownloading() ? View.VISIBLE : View.GONE);
+
+		if(soundTrack.isViewed())
+			view.setBackgroundColor(view.getResources().getColor(R.color.gray));
+		else
+			view.setBackgroundColor(view.getResources().getColor(R.color.black));
+
         return view;
     }
 

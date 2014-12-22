@@ -1,9 +1,9 @@
 package com.busylee.audiobook.service.media;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
-import com.busylee.audiobook.base.CSoundTrackStorage;
 import com.busylee.audiobook.entities.CSoundTrack;
 
 import java.io.IOException;
@@ -16,7 +16,7 @@ public class CMediaPlayerService extends CAudioFocusMasterService {
 	/** Показывает необходимо ли реагировать на восстановление последнего трека
 	 *  Реагирует только один раз, при первом запуске сервиса
 	 * */
-	private boolean mNeesRestoreLast = true;
+	private boolean mNeedRestoreLast = true;
 
     @Override
     public void onCreate(){
@@ -24,8 +24,17 @@ public class CMediaPlayerService extends CAudioFocusMasterService {
 
     }
 
-    private CSoundTrackStorage getSoundTrackStorage(){
-        return getCustomApplication().getSoundTrackStorage();
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayer) {
+        super.onCompletion(mediaPlayer);
+
+        getCurrentSoundTrack().view();
+        updateTrackInfo(getCurrentSoundTrack());
+
+        if(mObserver != null)
+            mObserver.onPlayComplete();
+
+        playNext();
     }
 
     /**
@@ -118,8 +127,8 @@ public class CMediaPlayerService extends CAudioFocusMasterService {
      * @param seek
      */
     public void reloadLast(int trackId, int seek) {
-		if(mNeesRestoreLast) {
-			mNeesRestoreLast = false;
+		if(mNeedRestoreLast) {
+			mNeedRestoreLast = false;
 			CSoundTrack track = getSoundTrackStorage().getSoundTrackById(trackId);
 
 			if(track.isDownloaded())

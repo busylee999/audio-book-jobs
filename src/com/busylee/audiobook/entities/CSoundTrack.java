@@ -17,6 +17,8 @@ public class CSoundTrack {
     public final static int VIEWED = 1;
     public final static int NOT_VIEWED = 0;
 
+    public final static int SEEK_BOUND = 100;
+
     private int mTrackId = NO_ID;
 
     /** Имя файла*/
@@ -40,14 +42,10 @@ public class CSoundTrack {
     /** Был ли трек прослушан*/
     private boolean mIsViewed;
 
-    /** Текущее положение трека */
-    private int mSeek;
-
     public CSoundTrack(String fileName, String fileUrl, String filePath, boolean isDownloaded){
         mFileName = fileName;
 		mFileUrl = fileUrl;
         mFilePath = filePath;
-        mSeek = 0;
 		mIsDownloaded = isDownloaded;
         mIsViewed = false;
     }
@@ -57,7 +55,6 @@ public class CSoundTrack {
         mFileName = cursor.getString(cursor.getColumnIndex(CSoundTrackStorage.SoundTrackDBHelper.FIELD_NAME));
         mFileUrl = cursor.getString(cursor.getColumnIndex(CSoundTrackStorage.SoundTrackDBHelper.FIELD_LINK));
         mFilePath = cursor.getString(cursor.getColumnIndex(CSoundTrackStorage.SoundTrackDBHelper.FIELD_FILE_PATH));
-        mSeek = cursor.getInt(cursor.getColumnIndex(CSoundTrackStorage.SoundTrackDBHelper.FIELD_SEEK));
 		mDownloadProgress = cursor.getInt(cursor.getColumnIndex(CSoundTrackStorage.SoundTrackDBHelper.FIELD_DOWNLOAD_PROGRESS));
 
         mIsDownloaded = false;
@@ -136,7 +133,6 @@ public class CSoundTrack {
         contentValues.put(CSoundTrackStorage.SoundTrackDBHelper.FIELD_NAME, mFileName);
         contentValues.put(CSoundTrackStorage.SoundTrackDBHelper.FIELD_LINK, mFileUrl);
         contentValues.put(CSoundTrackStorage.SoundTrackDBHelper.FIELD_FILE_PATH, mFilePath);
-        contentValues.put(CSoundTrackStorage.SoundTrackDBHelper.FIELD_SEEK, mSeek);
         contentValues.put(CSoundTrackStorage.SoundTrackDBHelper.FIELD_DOWNLOADED, mIsDownloaded ? DOWNLOADED : NOT_DOWNLOADED);
         contentValues.put(CSoundTrackStorage.SoundTrackDBHelper.FIELD_VIEWED, mIsViewed ? VIEWED : NOT_VIEWED);
 		contentValues.put(CSoundTrackStorage.SoundTrackDBHelper.FIELD_DOWNLOAD_PROGRESS, mDownloadProgress);
@@ -159,6 +155,10 @@ public class CSoundTrack {
 		mIsViewed = true;
 	}
 
+	public void unview() {
+		mIsViewed = false;
+	}
+
 	public boolean isDownloading() {
 		return mIsDownloading;
 	}
@@ -166,4 +166,5 @@ public class CSoundTrack {
 	public void setIsDownloading(boolean isDownloading) {
 		mIsDownloading = isDownloading;
 	}
+
 }

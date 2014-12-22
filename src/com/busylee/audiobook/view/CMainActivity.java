@@ -21,7 +21,7 @@ import java.io.File;
 
 import static com.busylee.audiobook.view.dialog.CAAlertDialogFragment.TButton;
 
-public class CMainActivity extends CBindingActivity implements CTrackAdapter.SoundTrackClickListener, IPlayerFragmentObserver, AdapterView.OnItemClickListener {
+public class CMainActivity extends CBindingActivity implements CTrackAdapter.SoundTrackClickListener, IPlayerFragmentObserver, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     static final String TAG = "MainActivity";
 	static final String DELETE_DIALOG_TAG = "DELETE_DIALOG_TAG";
@@ -76,6 +76,7 @@ public class CMainActivity extends CBindingActivity implements CTrackAdapter.Sou
 
 		lvTrackList.setAdapter(mTrackAdapter);
 		lvTrackList.setOnItemClickListener(this);
+		lvTrackList.setOnItemLongClickListener(this);
     }
 
 	@Override
@@ -152,6 +153,11 @@ public class CMainActivity extends CBindingActivity implements CTrackAdapter.Sou
 	@Override
 	public void onPrepared(int seek) {
 		getPlayerFragment().onPrepared(seek);
+	}
+
+	@Override
+	public void onPlayComplete() {
+		mTrackAdapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -236,5 +242,29 @@ public class CMainActivity extends CBindingActivity implements CTrackAdapter.Sou
 							addDownloadTask(soundTrack);
 					}
 				}).show(getFragmentManager(), DOWNLOAD_DIALOG_TAG);
+	}
+
+	@Override
+	public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+		final CSoundTrack soundTrack = mTrackAdapter.getSoundTrack(i);
+		if(!soundTrack.isViewed())
+			CAAlertDialogFragment.newInstance(getString(R.string.mark_as_viewed_dialog_title), null, R.string.ok, R.string.cancel, new IAAlertDialogObserver() {
+				@Override
+				public void alertDialogButtonPressed(String tag, TButton button) {
+					soundTrack.view();
+					getSoundTrackStorage().updateTrackInfo(soundTrack);
+					mTrackAdapter.notifyDataSetChanged();
+				}
+			}).show(getFragmentManager(), DOWNLOAD_DIALOG_TAG);
+		else
+			CAAlertDialogFragment.newInstance(getString(R.string.unmarked_viewed_dialog_title), null, R.string.ok, R.string.cancel, new IAAlertDialogObserver() {
+				@Override
+				public void alertDialogButtonPressed(String tag, TButton button) {
+					soundTrack.unview();
+					getSoundTrackStorage().updateTrackInfo(soundTrack);
+					mTrackAdapter.notifyDataSetChanged();
+				}
+			}).show(getFragmentManager(), DOWNLOAD_DIALOG_TAG);
+		return true;
 	}
 }

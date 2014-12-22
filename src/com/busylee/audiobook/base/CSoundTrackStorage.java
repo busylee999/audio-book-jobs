@@ -126,7 +126,6 @@ public class CSoundTrackStorage {
         public final static String FIELD_FILE_PATH = "file_path";
         public final static String FIELD_DOWNLOADED = "downloaded";
         public final static String FIELD_VIEWED = "viewed";
-        public final static String FIELD_SEEK = "seek";
 		public final static String FIELD_NEED_DOWNLOAD = "need_download";
 		public final static String FIELD_DOWNLOAD_PROGRESS = "download_progress";
 
@@ -146,7 +145,6 @@ public class CSoundTrackStorage {
                     + FIELD_FILE_PATH + " text,"
                     + FIELD_DOWNLOADED + " integer,"
                     + FIELD_VIEWED + " integer,"
-                    + FIELD_SEEK + " integer,"
 					+ FIELD_NEED_DOWNLOAD + " integer,"
 					+ FIELD_DOWNLOAD_PROGRESS + " integer"
                     + ");");

@@ -4,6 +4,8 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import com.busylee.audiobook.CAudioBookApplication;
+import com.busylee.audiobook.base.CSoundTrackStorage;
+import com.busylee.audiobook.entities.CSoundTrack;
 
 /**
  * Created by busylee on 14.04.14.
@@ -32,6 +34,14 @@ public class CCustomService extends Service {
 
     protected CAudioBookApplication getCustomApplication(){
         return (CAudioBookApplication) getApplication();
+    }
+
+    protected void updateTrackInfo(CSoundTrack soundTrack){
+        getSoundTrackStorage().updateTrackInfo(soundTrack);
+    }
+
+    protected CSoundTrackStorage getSoundTrackStorage(){
+        return getCustomApplication().getSoundTrackStorage();
     }
 
 }

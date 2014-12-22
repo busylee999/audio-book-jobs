@@ -5,8 +5,12 @@
     <string name="delete_dialog_title">Вы действительно хотите удалить файл выбранного трека</string>
     <string name="play_not_downloaded_dialog_title">Звуковой файл для данной части еще не скачан. Добавить в очередь скачивания?</string>
 
+    <string name="unmarked_viewed_dialog_title">Пометить трек, как новый?</string>
+    <string name="mark_as_viewed_dialog_title">Пометить трек, как прочитанный?</string>
+
     <string name="sound_track_removed">Файл для трека удален</string>
 
+    <string name="ok">Да</string>
     <string name="add">Добавить</string>
     <string name="delete">Удалить</string>
     <string name="cancel">Отмена</string>

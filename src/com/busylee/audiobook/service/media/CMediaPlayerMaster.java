@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * Created by busylee on 14.04.14.
  */
-public class CMediaPlayerMaster extends CForegroundService implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
+public class CMediaPlayerMaster extends CForegroundService implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
 	/** Задержка перед повторной проверкой текущей позиции и уведомления обозревателя */
     final static int SEEK_CHECK_DELAY = 500;
@@ -66,6 +66,7 @@ public class CMediaPlayerMaster extends CForegroundService implements MediaPlaye
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         mMediaPlayer.setOnErrorListener(this);
+        mMediaPlayer.setOnCompletionListener(this);
     }
 
 	/**
@@ -274,12 +275,19 @@ public class CMediaPlayerMaster extends CForegroundService implements MediaPlaye
         mNeedRepeat = false;
     }
 
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayer) {
+        mObserver.onPlayStop();
+    }
+
     public interface IMediaPlayerObserver {
         public void onPlayResume();
         public void onPlayPause(int seek);
         public void onPlayStop();
 
         public void onPrepared(int seek);
+
+        public void onPlayComplete();
 
         public void onSoundTrackChange(CSoundTrack soundTrack);
 

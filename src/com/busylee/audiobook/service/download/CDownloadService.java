@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import com.busylee.audiobook.base.CSoundTrackStorage;
 import com.busylee.audiobook.entities.CSoundTrack;
 import com.busylee.audiobook.service.CCustomService;
 import com.busylee.audiobook.utils.connection.CSmartPhoneConnectionStateListener;
@@ -161,17 +160,9 @@ public class CDownloadService extends CCustomService implements CSoundTrackDownl
 	@Override
 	public void onSoundTrackDownloadProgress(CSoundTrack soundTrack) {
 		getSoundTrackStorage().updateTrackInfo(soundTrack);
-		if(mDownLoadServiceObserver != null)
+		if (mDownLoadServiceObserver != null)
 			mDownLoadServiceObserver.onSoundTrackDownloadProgressChange(soundTrack.getDownloadProgress());
 	}
-
-    private void updateTrackInfo(CSoundTrack soundTrack){
-        getSoundTrackStorage().updateTrackInfo(soundTrack);
-    }
-
-    private CSoundTrackStorage getSoundTrackStorage(){
-        return getCustomApplication().getSoundTrackStorage();
-    }
 
 	/**
 	 * Читаем интересные нам настройки
