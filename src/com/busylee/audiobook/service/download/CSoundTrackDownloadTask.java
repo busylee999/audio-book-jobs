@@ -2,6 +2,7 @@ package com.busylee.audiobook.service.download;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 import com.busylee.audiobook.entities.CSoundTrack;
 
@@ -14,6 +15,8 @@ import java.net.URL;
  */
 public class CSoundTrackDownloadTask extends AsyncTask<Void, Integer, CSoundTrack> {
 
+	static final String LOG_TAG = "CSoundTrackDownloadTask";
+
 	public static class Errors {
 		public static final int E_NO_ERROR = 0;
 
@@ -24,7 +27,6 @@ public class CSoundTrackDownloadTask extends AsyncTask<Void, Integer, CSoundTrac
 
 	}
 
-	static final String LOG_TAG = "SoundTrackDownloadTask";
 	static final int DATA_BUFFER_LENGTH = 4096;
 	static final int PROGRESS_SENDING_COUNT = 100000;
 
@@ -192,10 +194,15 @@ public class CSoundTrackDownloadTask extends AsyncTask<Void, Integer, CSoundTrac
 	public File getFileForSoundTrack(){
 		File file;
 
-		if(mSaveFileMode == CDownloadService.TSaveFileMode.INTERNAL)
-			file = getInternalFile(mContext, mSoundTrack);
-		else
+		if (isExternalStorageWritable()) {
 			file = getExternalFile(mContext, mSoundTrack);
+		} else
+			file = getInternalFile(mContext, mSoundTrack);
+
+//		if(mSaveFileMode == CDownloadService.TSaveFileMode.INTERNAL)
+//			file = getInternalFile(mContext, mSoundTrack);
+//		else
+//			file = getExternalFile(mContext, mSoundTrack);
 
 		return file;
 	}
@@ -208,6 +215,14 @@ public class CSoundTrackDownloadTask extends AsyncTask<Void, Integer, CSoundTrac
 	 */
 	public static File getInternalFile(Context context, CSoundTrack soundTrack){
 		return new File(context.getFilesDir(), soundTrack.getFileName());
+	}
+
+	private boolean isExternalStorageWritable() {
+		String state = Environment.getExternalStorageState();
+		if (Environment.MEDIA_MOUNTED.equals(state)) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
