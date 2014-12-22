@@ -177,7 +177,7 @@ public class CMainActivity extends CBindingActivity implements CTrackAdapter.Sou
 	}
 
 	@Override
-	public void onSoundTrackDownloadError(int error, CSoundTrack soundTrack) {
+	public void onSoundTrackDownloadError(int error) {
 		mTrackAdapter.notifyDataSetChanged();
 	}
 

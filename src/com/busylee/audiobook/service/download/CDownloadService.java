@@ -9,23 +9,41 @@ import android.preference.PreferenceManager;
 import com.busylee.audiobook.base.CSoundTrackStorage;
 import com.busylee.audiobook.entities.CSoundTrack;
 import com.busylee.audiobook.service.CCustomService;
+import com.busylee.audiobook.utils.connection.CSmartPhoneConnectionStateListener;
+import com.busylee.audiobook.utils.connection.IAPhoneStateConnectionListenerObserver;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 /**
  * Created by busylee on 17.04.14.
  */
-public class CDownloadService extends CCustomService implements CSoundTrackDownloadTask.SoundTrackDownloadObserver, SharedPreferences.OnSharedPreferenceChangeListener {
+public class CDownloadService extends CCustomService implements CSoundTrackDownloadTask.SoundTrackDownloadObserver, SharedPreferences.OnSharedPreferenceChangeListener, IAPhoneStateConnectionListenerObserver {
 
 	public final static String PREF_KEY_SAVE_FILE_MODE = "SAVE_FILE_MODE";
-	boolean mNeedToStart = true;
+
+	CSmartPhoneConnectionStateListener mPhoneStateListener;
 
 	DownLoadServiceObserver mDownLoadServiceObserver;
 
 	Queue<CSoundTrackDownloadTask> mDownloadTaskQueue = new LinkedList<CSoundTrackDownloadTask>();
+	List<CSoundTrackDownloadTask> mDownloadWaitingTaskList = new ArrayList<CSoundTrackDownloadTask>();
 
 	TSaveFileMode mSaveFileMode = TSaveFileMode.INTERNAL;
+
+	CSoundTrackDownloadTask mCurrentTask = null;
+
+	@Override
+	public void onConnectionEstablished() {
+		if(mDownloadWaitingTaskList.size() > 0) {
+			mDownloadTaskQueue.addAll(mDownloadWaitingTaskList);
+			mDownloadWaitingTaskList.clear();
+
+			startNext();
+		}
+	}
 
 	public static enum TSaveFileMode{
 		INTERNAL,
@@ -34,7 +52,15 @@ public class CDownloadService extends CCustomService implements CSoundTrackDownl
 
 	public void addDownloadTask(CSoundTrack soundTrack){
 
+		soundTrack.setIsDownloading(true);
+		if(mDownLoadServiceObserver != null)
+			mDownLoadServiceObserver.onSoundTrackDownloadStart(soundTrack);
+
+		mPhoneStateListener.startListenConnectionState();
+
 		mDownloadTaskQueue.add(new CSoundTrackDownloadTask(soundTrack, this, getApplicationContext(), mSaveFileMode));
+		mDownloadTaskQueue.addAll(mDownloadWaitingTaskList);
+		mDownloadWaitingTaskList.clear();
 
 		startNext();
 	}
@@ -48,10 +74,13 @@ public class CDownloadService extends CCustomService implements CSoundTrackDownl
 	}
 
 	private void startNext(){
-		CSoundTrackDownloadTask soundTrackDownloadTask = mDownloadTaskQueue.poll();
-		if(soundTrackDownloadTask != null)
-			soundTrackDownloadTask.execute();
-
+		if(mCurrentTask == null) {
+			mCurrentTask = mDownloadTaskQueue.poll();
+			if (mCurrentTask != null) {
+				mCurrentTask.execute();
+			} else if (mDownloadWaitingTaskList.size() == 0)
+				mPhoneStateListener.stopListen();
+		}
 	}
 
 	// Binder given to clients
@@ -78,6 +107,8 @@ public class CDownloadService extends CCustomService implements CSoundTrackDownl
 
 		readNecessaryPreferences(sharedPreferences);
 
+		mPhoneStateListener = new CSmartPhoneConnectionStateListener(this);
+		mPhoneStateListener.setObserver(this);
 
 	}
 
@@ -95,6 +126,7 @@ public class CDownloadService extends CCustomService implements CSoundTrackDownl
 
 	@Override
 	public void onSoundTrackDownloadComplete(CSoundTrack soundTrack) {
+		mCurrentTask = null;
         updateTrackInfo(soundTrack);
 		startNext();
 		if(mDownLoadServiceObserver != null) {
@@ -113,10 +145,17 @@ public class CDownloadService extends CCustomService implements CSoundTrackDownl
 	}
 
 	@Override
-	public void onSoundTrackDownloadError(int error, CSoundTrack soundTrack) {
-		//TODO в данной ситуации необходимо дождаться адекватного действия от задачи
+	public void onSoundTrackDownloadError(int error, CSoundTrackDownloadTask soundTrackDownloadTask) {
+		mCurrentTask = null;
+		startNext();
+		switch (error) {
+			case CSoundTrackDownloadTask.Errors.E_UNKNOWN_ERROR:
+				mDownloadWaitingTaskList.add(soundTrackDownloadTask);
+				break;
+		}
+
 		if(mDownLoadServiceObserver != null)
-			mDownLoadServiceObserver.onSoundTrackDownloadError(error, soundTrack);
+			mDownLoadServiceObserver.onSoundTrackDownloadError(error);
 	}
 
 	@Override
@@ -159,7 +198,7 @@ public class CDownloadService extends CCustomService implements CSoundTrackDownl
 	}
 
 	public interface DownLoadServiceObserver{
-		public void onSoundTrackDownloadError(int error, CSoundTrack soundTrack);
+		public void onSoundTrackDownloadError(int error);
 		public void onSoundTrackDownloadSuccess(CSoundTrack soundTrack);
 		public void onSoundTrackDownloadProgressChange(int progress);
 		public void onSoundTrackDownloadStart(CSoundTrack soundTrack);

@@ -15,12 +15,12 @@ import java.net.URL;
 public class CSoundTrackDownloadTask extends AsyncTask<Void, Integer, CSoundTrack> {
 
 	public static class Errors {
-		public static int E_NO_ERROR = 0;
+		public static final int E_NO_ERROR = 0;
 
-		public static int E_UNKNOWN_ERROR = 100;
-		public static int E_HTTP_RESPONSE_NOT_OK  = E_UNKNOWN_ERROR + 1;
-		public static int E_NOT_ENOUGH_FREE_SPACE = E_UNKNOWN_ERROR + 2;
-		public static int E_FILE_CREATION         = E_UNKNOWN_ERROR + 3;
+		public static final int E_UNKNOWN_ERROR = 100;
+		public static final int E_HTTP_RESPONSE_NOT_OK  = E_UNKNOWN_ERROR + 1;
+		public static final int E_NOT_ENOUGH_FREE_SPACE = E_UNKNOWN_ERROR + 2;
+		public static final int E_FILE_CREATION         = E_UNKNOWN_ERROR + 3;
 
 	}
 
@@ -69,9 +69,9 @@ public class CSoundTrackDownloadTask extends AsyncTask<Void, Integer, CSoundTrac
 	@Override
 	protected void onPreExecute() {
 		super.onPreExecute();
-		mSoundTrack.setIsDownloading(true);
-		if(mSoundTrackDownloadCompleteObserver != null)
-			mSoundTrackDownloadCompleteObserver.onStartDownloadTrack(mSoundTrack);
+//		mSoundTrack.setIsDownloading(true);
+//		if(mSoundTrackDownloadCompleteObserver != null)
+//			mSoundTrackDownloadCompleteObserver.onStartDownloadTrack(mSoundTrack);
 	}
 
 	@Override
@@ -83,12 +83,13 @@ public class CSoundTrackDownloadTask extends AsyncTask<Void, Integer, CSoundTrac
 
 	@Override
 	protected void onPostExecute(CSoundTrack soundTrack) {
-		mSoundTrack.setIsDownloading(false);
 		if(mSoundTrackDownloadCompleteObserver != null)
-			if(soundTrack != null)
+			if(soundTrack != null) {
+				soundTrack.setIsDownloading(false);
 				mSoundTrackDownloadCompleteObserver.onSoundTrackDownloadComplete(mSoundTrack);
+			}
 			else
-				mSoundTrackDownloadCompleteObserver.onSoundTrackDownloadError(mError, mSoundTrack);
+				mSoundTrackDownloadCompleteObserver.onSoundTrackDownloadError(mError, new CSoundTrackDownloadTask(mSoundTrack, mSoundTrackDownloadCompleteObserver, mContext, mSaveFileMode));
 
 	}
 
@@ -222,7 +223,7 @@ public class CSoundTrackDownloadTask extends AsyncTask<Void, Integer, CSoundTrac
 	public interface SoundTrackDownloadObserver {
 		public void onStartDownloadTrack(CSoundTrack soundTrack);
 		public void onSoundTrackDownloadComplete (CSoundTrack soundTrack);
-		public void onSoundTrackDownloadError(int error, CSoundTrack soundTrack);
+		public void onSoundTrackDownloadError(int error, CSoundTrackDownloadTask soundTrack);
 		public void onSoundTrackDownloadProgress(CSoundTrack soundTrack);
 	}
 
