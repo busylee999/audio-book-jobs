@@ -28,6 +28,7 @@ public class CMainActivity extends CBindingActivity implements CTrackAdapter.Sou
 	static final String DOWNLOAD_DIALOG_TAG = "DOWNLOAD_DIALOG_TAG";
 	static final int EXIT_OPTION_MENU_ITEM = 0;
 	static final int EDIT_OPTION_MENU_ITEM = 1;
+	static final int DELETE_ALL_OPTION_MENU_ITEM = 2;
 
 	private CTrackAdapter mTrackAdapter;
 
@@ -45,7 +46,8 @@ public class CMainActivity extends CBindingActivity implements CTrackAdapter.Sou
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add(0, EDIT_OPTION_MENU_ITEM, 0, "Редактировать");
-		menu.add(1, EXIT_OPTION_MENU_ITEM, 1, "Выйти из приложения");
+		menu.add(1, DELETE_ALL_OPTION_MENU_ITEM, 1, "Удалить все треки");
+		menu.add(2, EXIT_OPTION_MENU_ITEM, 2, "Выйти из приложения");
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -67,6 +69,14 @@ public class CMainActivity extends CBindingActivity implements CTrackAdapter.Sou
 		} else if (item.getItemId() == EDIT_OPTION_MENU_ITEM) {
 			if(mTrackAdapter != null)
 				mTrackAdapter.runEditMode();
+		} else if (item.getItemId() == DELETE_ALL_OPTION_MENU_ITEM) {
+			CAAlertDialogFragment.newInstance(getString(R.string.delete_all_tracks_dialog_title), null, R.string.ok, R.string.cancel, new IAAlertDialogObserver() {
+				@Override
+				public void alertDialogButtonPressed(String tag, TButton button) {
+					getSoundTrackStorage().deleteAllTrackFiles();
+					mTrackAdapter.notifyDataSetChanged();
+				}
+			}).show(getFragmentManager(), DOWNLOAD_DIALOG_TAG);
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -157,6 +167,8 @@ public class CMainActivity extends CBindingActivity implements CTrackAdapter.Sou
 
     @Override
     public void onPlayResume() {
+		if(mTrackAdapter != null)
+			mTrackAdapter.notifyDataSetChanged();
 		getPlayerFragment().onPlayResume();
     }
 

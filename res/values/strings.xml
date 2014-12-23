@@ -7,6 +7,7 @@
 
     <string name="unmarked_viewed_dialog_title">Пометить трек, как новый?</string>
     <string name="mark_as_viewed_dialog_title">Пометить трек, как прочитанный?</string>
+    <string name="delete_all_tracks_dialog_title">Вы действительно хотите файлы для всех треков?</string>
 
     <string name="sound_track_removed">Файл для трека удален</string>
 

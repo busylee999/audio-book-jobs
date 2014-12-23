@@ -18,6 +18,8 @@ public class CMediaPlayerService extends CAudioFocusMasterService {
 	 * */
 	private boolean mNeedRestoreLast = true;
 
+    private CSoundTrack mCurrentSoundTrack = null;
+
     @Override
     public void onCreate(){
         super.onCreate();
@@ -28,8 +30,11 @@ public class CMediaPlayerService extends CAudioFocusMasterService {
     public void onCompletion(MediaPlayer mediaPlayer) {
         super.onCompletion(mediaPlayer);
 
-        getCurrentSoundTrack().view();
-        updateTrackInfo(getCurrentSoundTrack());
+        if(mCurrentSoundTrack == null)
+            return;
+
+        mCurrentSoundTrack.view();
+        updateTrackInfo(mCurrentSoundTrack);
 
         if(mObserver != null)
             mObserver.onPlayComplete();
@@ -81,6 +86,7 @@ public class CMediaPlayerService extends CAudioFocusMasterService {
 	 * @param seek
 	 */
     private void playSoundTrack(CSoundTrack soundTrack, int seek){
+        mCurrentSoundTrack = soundTrack;
         if (soundTrack != null){
             try {
 				playFilePath(soundTrack.getFilePath(), seek);
@@ -98,7 +104,9 @@ public class CMediaPlayerService extends CAudioFocusMasterService {
 	 * @param soundTrack
 	 */
     private void playSoundTrack(CSoundTrack soundTrack){
-       playSoundTrack(soundTrack, 0);
+        mCurrentSoundTrack = soundTrack;
+        if(soundTrack.isDownloaded())
+            playSoundTrack(soundTrack, 0);
     }
 
 	/**
@@ -107,6 +115,7 @@ public class CMediaPlayerService extends CAudioFocusMasterService {
 	 * @param seek
 	 */
 	private void setSoundTrack(CSoundTrack soundTrack, int seek) {
+        mCurrentSoundTrack = soundTrack;
 		if (soundTrack != null){
 			try {
 				setFilePath(soundTrack.getFilePath(), seek);

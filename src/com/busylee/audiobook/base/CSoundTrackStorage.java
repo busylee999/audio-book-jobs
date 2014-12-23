@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import com.busylee.audiobook.entities.CSoundTrack;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,21 @@ public class CSoundTrackStorage {
 
     int mSoundTrackNumber = 0;
 
-	public static class SingletonHolder {
+    public void deleteAllTrackFiles() {
+        for(CSoundTrack soundTrack : mSoundTrackList) {
+            String filePath = soundTrack.getFilePath();
+            if(filePath != null) {
+                final File file = new File(filePath);
+                if (file.exists())
+                    file.delete();
+                soundTrack.onFileRemoved();
+                updateTrackInfo(soundTrack);
+            }
+        }
+
+    }
+
+    public static class SingletonHolder {
 		public static final CSoundTrackStorage HOLDER_INSTANCE = new CSoundTrackStorage();
 	}
 
