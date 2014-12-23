@@ -27,6 +27,7 @@ public class CMainActivity extends CBindingActivity implements CTrackAdapter.Sou
 	static final String DELETE_DIALOG_TAG = "DELETE_DIALOG_TAG";
 	static final String DOWNLOAD_DIALOG_TAG = "DOWNLOAD_DIALOG_TAG";
 	static final int EXIT_OPTION_MENU_ITEM = 0;
+	static final int EDIT_OPTION_MENU_ITEM = 1;
 
 	private CTrackAdapter mTrackAdapter;
 
@@ -38,12 +39,13 @@ public class CMainActivity extends CBindingActivity implements CTrackAdapter.Sou
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        initializeViews();
+        initializeViews(savedInstanceState);
     }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(0, EXIT_OPTION_MENU_ITEM, 0, "Выйти из приложения");
+		menu.add(0, EDIT_OPTION_MENU_ITEM, 0, "Редактировать");
+		menu.add(1, EXIT_OPTION_MENU_ITEM, 1, "Выйти из приложения");
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -62,22 +64,41 @@ public class CMainActivity extends CBindingActivity implements CTrackAdapter.Sou
 			unbindMediaService();
 			stopMediaService();
 			finish();
+		} else if (item.getItemId() == EDIT_OPTION_MENU_ITEM) {
+			if(mTrackAdapter != null)
+				mTrackAdapter.runEditMode();
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
-    /**
+	@Override
+	public void onBackPressed() {
+		if(mTrackAdapter != null && mTrackAdapter.stopEditMode())
+			return;
+
+		super.onBackPressed();
+	}
+
+	/**
      * Инициализируем вьюшки
      */
-    private void initializeViews(){
+    private void initializeViews(Bundle savedInstanceState){
 		final ListView lvTrackList = (ListView) findViewById(R.id.lvTrackList);
 
 		mTrackAdapter = new CTrackAdapter(this, getSoundTrackStorage() , this);
+		mTrackAdapter.onRestoreInstanceState(savedInstanceState);
 
 		lvTrackList.setAdapter(mTrackAdapter);
 		lvTrackList.setOnItemClickListener(this);
 		lvTrackList.setOnItemLongClickListener(this);
     }
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		if(mTrackAdapter != null)
+			mTrackAdapter.onSaveInstanceState(outState);
+	}
 
 	@Override
 	public void playNextTrack() {

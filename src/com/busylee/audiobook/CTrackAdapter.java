@@ -1,6 +1,7 @@
 package com.busylee.audiobook;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +17,44 @@ import java.util.List;
  */
 public class CTrackAdapter extends BaseAdapter {
 
+	public static final String EDIT_MODE_KEY = "EDIT_MODE_KEY";
+
     private List<CSoundTrack> mSoundTrackList;
     private LayoutInflater mLayoutInflater;
 	private SoundTrackClickListener mSoundTrackClickListener;
+
+	private boolean mEditMode = false;
 
     public CTrackAdapter(Context context, CSoundTrackStorage soundTrackStorage, SoundTrackClickListener soundTrackClickListener){
         mSoundTrackList = soundTrackStorage.getSoundTrackList();
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mSoundTrackClickListener = soundTrackClickListener;
     }
+
+	public void runEditMode() {
+		mEditMode = true;
+		notifyDataSetChanged();
+	}
+
+	public boolean stopEditMode() {
+		if(mEditMode) {
+			mEditMode = false;
+			notifyDataSetChanged();
+			return true;
+		}
+		return false;
+	}
+
+
+
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putBoolean(EDIT_MODE_KEY, mEditMode);
+	}
+
+	public void onRestoreInstanceState(Bundle state) {
+		if(state != null)
+			mEditMode = state.getBoolean(EDIT_MODE_KEY, false);
+	}
 
     @Override
     public int getCount() {
@@ -78,7 +108,7 @@ public class CTrackAdapter extends BaseAdapter {
 			}
 		});
 
-		(view.findViewById(R.id.btnDelete)).setVisibility(soundTrack.isDownloaded() ? View.VISIBLE : View.GONE);
+		(view.findViewById(R.id.btnDelete)).setVisibility(soundTrack.isDownloaded() && mEditMode ? View.VISIBLE : View.GONE);
         (view.findViewById(R.id.btnLoad)).setVisibility(soundTrack.isDownloaded() || soundTrack.isDownloading() ? View.GONE : View.VISIBLE);
 		(view.findViewById(R.id.tvDownloading)).setVisibility(soundTrack.isDownloading() ? View.VISIBLE : View.GONE);
 
