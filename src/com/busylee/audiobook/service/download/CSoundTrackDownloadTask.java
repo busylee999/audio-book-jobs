@@ -128,7 +128,7 @@ public class CSoundTrackDownloadTask extends AsyncTask<Void, Integer, CSoundTrac
 			/* проверяем достаточно ли свободно места для
 			  * сохранения файла
 			 */
-			if (fileLength < file.getParentFile().getFreeSpace()){
+			if (file.getParentFile() != null && fileLength < file.getParentFile().getFreeSpace()){
 				// download the file
 				input = connection.getInputStream();
 				if(file.exists())
