@@ -15,9 +15,9 @@ import org.acra.sender.HttpSender;
 				formKey = "",
 				httpMethod = HttpSender.Method.PUT,
 				reportType = HttpSender.Type.JSON,
-				formUri = "http://62.113.208.110:5984/acra-audio-jobs/_design/acra-storage/_update/report",
-				formUriBasicAuthLogin = "jobs",
-				formUriBasicAuthPassword = "123456",
+				formUri = "http://tryremember.ru:5984/acra-audio-book-jobs/_design/acra-storage/_update/report",
+				formUriBasicAuthLogin = "agdnadndgamn",
+				formUriBasicAuthPassword = "2461356",
 				// Your usual ACRA configuration
 				mode = ReportingInteractionMode.TOAST,
 				resToastText = R.string.acra_toast_text
