@@ -5,6 +5,7 @@
         <item name="android:textViewStyle">@style/CustomTextView</item>
         <item name="android:actionBarStyle">@style/CustomActionBarStyle</item>
         <!--<item name="android:seekBarStyle">@android:style/Widget.Holo.SeekBar</item>-->
+        <item name="android:windowBackground">@color/black</item>
     </style>
 
     <style name="CustomActionBarStyle" parent="@android:style/Widget.Holo.ActionBar">
