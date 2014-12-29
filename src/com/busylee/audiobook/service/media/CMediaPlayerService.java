@@ -137,6 +137,7 @@ public class CMediaPlayerService extends CAudioFocusMasterService {
      */
     public void reloadLast(int trackId, int seek) {
 		if(mNeedRestoreLast) {
+            reset();
 			mNeedRestoreLast = false;
 			CSoundTrack track = getSoundTrackStorage().getSoundTrackById(trackId);
 
