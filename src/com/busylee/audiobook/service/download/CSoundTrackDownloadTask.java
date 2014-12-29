@@ -58,14 +58,17 @@ public class CSoundTrackDownloadTask extends AsyncTask<Void, Integer, CSoundTrac
 
 			mSoundTrack.setFilePath(file.getAbsolutePath());
 
-			if (downLoadFile(mSoundTrack.getFileUrl(), file)) {
+			boolean downloadResultOk = downLoadFile(mSoundTrack.getFileUrl(), file);
+
+			mSoundTrack.setIsDownloading(false);
+
+			if (downloadResultOk) {
 				mSoundTrack.downloaded();
-				return mSoundTrack;
 			}
 		} else
 			setError(Errors.E_FILE_CREATION);
 
-        return null;
+        return mSoundTrack;
     }
 
 	@Override
@@ -86,11 +89,9 @@ public class CSoundTrackDownloadTask extends AsyncTask<Void, Integer, CSoundTrac
 	@Override
 	protected void onPostExecute(CSoundTrack soundTrack) {
 		if(mSoundTrackDownloadCompleteObserver != null)
-			if(soundTrack != null) {
-				soundTrack.setIsDownloading(false);
+			if(soundTrack.isDownloaded()) {
 				mSoundTrackDownloadCompleteObserver.onSoundTrackDownloadComplete(mSoundTrack);
-			}
-			else
+			} else
 				mSoundTrackDownloadCompleteObserver.onSoundTrackDownloadError(mError, new CSoundTrackDownloadTask(mSoundTrack, mSoundTrackDownloadCompleteObserver, mContext, mSaveFileMode));
 
 	}
@@ -232,7 +233,7 @@ public class CSoundTrackDownloadTask extends AsyncTask<Void, Integer, CSoundTrac
 	 * @return
 	 */
 	public static File getExternalFile(Context context, CSoundTrack soundTrack){
-		return new File(context.getExternalFilesDir(null), soundTrack.getFileName());
+		return new File(context.getExternalFilesDir(""), soundTrack.getFileName());
 	}
 
 	public interface SoundTrackDownloadObserver {

@@ -146,12 +146,14 @@ public class CDownloadService extends CCustomService implements CSoundTrackDownl
 	@Override
 	public void onSoundTrackDownloadError(int error, CSoundTrackDownloadTask soundTrackDownloadTask) {
 		mCurrentTask = null;
-		startNext();
+
 		switch (error) {
 			case CSoundTrackDownloadTask.Errors.E_UNKNOWN_ERROR:
 				mDownloadWaitingTaskList.add(soundTrackDownloadTask);
 				break;
 		}
+
+		startNext();
 
 		if(mDownLoadServiceObserver != null)
 			mDownLoadServiceObserver.onSoundTrackDownloadError(error);
